@@ -21,6 +21,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os.path
+
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QFileDialog
@@ -29,7 +31,6 @@ from qgis.PyQt.QtWidgets import QAction, QFileDialog
 from .resources import *
 # Import the code for the dialog
 from .dycast_qgis_plugin_dialog import DycastQgisPluginDialog
-import os.path
 
 
 class DycastQgisPlugin:
