@@ -18,8 +18,8 @@ from qgis.PyQt.QtGui import QIcon
 
 
 
-class DycastQgisPluginDialogTest(unittest.TestCase):
-    """Test rerources work."""
+class DycastQgisPluginResourcesTest(unittest.TestCase):
+    """Test if resources are available."""
 
     def setUp(self):
         """Runs before each test."""
