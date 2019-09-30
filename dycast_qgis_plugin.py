@@ -23,7 +23,7 @@
 """
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtWidgets import QAction, QFileDialog
 
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -179,6 +179,14 @@ class DycastQgisPlugin:
                 action)
             self.iface.removeToolBarIcon(action)
 
+    def select_input_file(self):
+        file_path, filter_string = QFileDialog.getOpenFileName(
+            parent=self.dlg,
+            caption="Select input file...",
+            filter='CSV (*.csv);; TSV (*.tsv)')
+
+        self.dlg.importCaseFileLineEdit.setText(file_path)
+        return file_path
 
     def run(self):
         """Run method that performs all the real work"""
@@ -188,6 +196,7 @@ class DycastQgisPlugin:
         if self.first_start == True:
             self.first_start = False
             self.dlg = DycastQgisPluginDialog()
+            self.dlg.importCaseFilePushButton.clicked.connect(self.select_input_file)
 
         # show the dialog
         self.dlg.show()
