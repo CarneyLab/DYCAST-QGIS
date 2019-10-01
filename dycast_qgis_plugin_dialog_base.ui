@@ -52,7 +52,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="importCaseFilePushButton">
+  <widget class="QPushButton" name="importCaseFileBrowseButton">
    <property name="geometry">
     <rect>
      <x>240</x>

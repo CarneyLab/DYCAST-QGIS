@@ -197,7 +197,7 @@ class DycastQgisPlugin:
         if self.first_start == True:
             self.first_start = False
             self.dlg = DycastQgisPluginDialog()
-            self.dlg.importCaseFilePushButton.clicked.connect(self.select_input_file)
+            self.dlg.importCaseFileBrowseButton.clicked.connect(self.select_input_file)
 
         # show the dialog
         self.dlg.show()
