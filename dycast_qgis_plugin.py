@@ -27,6 +27,8 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QFileDialog
 
+from qgis.core import QgsApplication
+from .tasks.load_cases_task import LoadCasesTask
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
@@ -193,6 +195,12 @@ class DycastQgisPlugin:
         file_path = self.dlg.importCaseFileLineEdit.text()
         dycast_main(['load_cases', '--srid_cases', '3857', '--files', file_path])
         self.dlg.importCaseFileResultLabel.setText("Done.")
+        if file_path:
+            load_cases_task = LoadCasesTask()
+            task_id = QgsApplication.taskManager().addTask(load_cases_task)
+            self.dlg.importCaseFileResultLabel.setText("Done. Task ID: {task_id}".format(task_id=task_id))
+        else: 
+            self.dlg.importCaseFileResultLabel.setText("Select an input file from your devise")
 
     def run(self):
         """Run method that performs all the real work"""
