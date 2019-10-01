@@ -189,6 +189,11 @@ class DycastQgisPlugin:
         self.dlg.importCaseFileLineEdit.setText(file_path)
         return file_path
 
+    def import_input_file(self):
+        file_path = self.dlg.importCaseFileLineEdit.text()
+        dycast_main(['load_cases', '--srid_cases', '3857', '--files', file_path])
+        self.dlg.importCaseFileResultLabel.setText("Done.")
+
     def run(self):
         """Run method that performs all the real work"""
 
@@ -198,6 +203,7 @@ class DycastQgisPlugin:
             self.first_start = False
             self.dlg = DycastQgisPluginDialog()
             self.dlg.importCaseFileBrowseButton.clicked.connect(self.select_input_file)
+            self.dlg.importCaseFileStartButton.clicked.connect(self.import_input_file)
 
         # show the dialog
         self.dlg.show()
