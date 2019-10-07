@@ -1,6 +1,6 @@
 from qgis.core import QgsTask, QgsMessageLog
 
-MESSAGE_CATEGORY = 'DYCAST log'
+MESSAGE_CATEGORY = 'Messages'
 
 class LoadCasesTask(QgsTask):
     """Runs the load_cases command in Dycast"""

@@ -29,7 +29,8 @@ from qgis.PyQt.QtWidgets import QAction, QFileDialog
 
 from qgis.core import QgsApplication
 from .tasks.load_cases_task import LoadCasesTask
-MESSAGE_CATEGORY = 'DYCAST log'
+
+MESSAGE_CATEGORY = 'Messages'
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
