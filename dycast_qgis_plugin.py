@@ -22,19 +22,21 @@
  ***************************************************************************/
 """
 import os.path
+import sys
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QFileDialog
+from qgis.core import QgsApplication, QgsMessageLog, Qgis, QgsTask
 
-from qgis.core import QgsApplication
-from .tasks.load_cases_task import LoadCasesTask
+from .dycast_qgis_plugin_dialog import DycastQgisPluginDialog
+
+from .resources import *
+from .tasks import load_cases_task
+
 
 MESSAGE_CATEGORY = 'Messages'
-# Initialize Qt resources from file resources.py
-from .resources import *
-# Import the code for the dialog
-from .dycast_qgis_plugin_dialog import DycastQgisPluginDialog
+
 
 def get_current_directory():
     return os.path.dirname(os.path.realpath(__file__))
