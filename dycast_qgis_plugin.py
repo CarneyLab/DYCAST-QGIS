@@ -36,6 +36,9 @@ from .resources import *
 # Import the code for the dialog
 from .dycast_qgis_plugin_dialog import DycastQgisPluginDialog
 
+def get_current_directory():
+    return os.path.dirname(os.path.realpath(__file__))
+
 
 class DycastQgisPlugin:
     """QGIS Plugin Implementation."""
@@ -71,6 +74,35 @@ class DycastQgisPlugin:
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
         self.first_start = None
+
+        self.configure_path()
+
+    def configure_path(self):
+        current_directory = get_current_directory()
+        self.add_plugin_to_path(current_directory)
+        self.add_dycast_to_path(current_directory)
+
+    def add_plugin_to_path(self, current_directory):
+        if current_directory not in sys.path:
+            QgsMessageLog.logMessage("Adding [{current_directory}] to path"
+                                     .format(current_directory=current_directory),
+                                     MESSAGE_CATEGORY, Qgis.Info)
+
+            sys.path.append(current_directory)
+
+            QgsMessageLog.logMessage("Path: {path}".format(path=sys.path),
+                                     MESSAGE_CATEGORY, Qgis.Info)
+
+    def add_dycast_to_path(self, current_directory):
+        dycast_path = os.path.join(current_directory, 'dycast_app')
+        if dycast_path not in sys.path:
+            QgsMessageLog.logMessage("Adding [{dycast_path}] to path"
+                                     .format(dycast_path=dycast_path),
+                                     MESSAGE_CATEGORY, Qgis.Info)
+
+            sys.path.append(dycast_path)
+            QgsMessageLog.logMessage("Path: {path}".format(path=sys.path),
+                                     MESSAGE_CATEGORY, Qgis.Info)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
