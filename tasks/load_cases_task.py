@@ -1,4 +1,5 @@
 from qgis.core import QgsTask, QgsMessageLog
+import ptvsd
 
 MESSAGE_CATEGORY = 'Messages'
 
@@ -32,3 +33,4 @@ class LoadCasesTask(QgsTask):
                  No exception was raised", \
                  MESSAGE_CATEGORY, QgsMessageLog.WARNING)
 
+    ptvsd.debug_this_thread()

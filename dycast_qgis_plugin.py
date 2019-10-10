@@ -34,6 +34,7 @@ from .dycast_qgis_plugin_dialog import DycastQgisPluginDialog
 from .resources import *
 from .tasks import load_cases_task
 
+from .remote_debugging import enable_remote_debugging
 
 MESSAGE_CATEGORY = 'Messages'
 
@@ -53,6 +54,9 @@ class DycastQgisPlugin:
             application at run time.
         :type iface: QgsInterface
         """
+        
+        enable_remote_debugging()
+
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
