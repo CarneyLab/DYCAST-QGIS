@@ -33,7 +33,6 @@ from .dycast_qgis_plugin_dialog import DycastQgisPluginDialog
 
 from .resources import *
 from .tasks import load_cases_task
-
 from .remote_debugging import enable_remote_debugging
 
 MESSAGE_CATEGORY = 'Messages'
@@ -239,14 +238,16 @@ class DycastQgisPlugin:
 
     def import_input_file(self):
         file_path = self.dlg.importCaseFileLineEdit.text()
-        dycast_main(['load_cases', '--srid_cases', '3857', '--files', file_path])
-        self.dlg.importCaseFileResultLabel.setText("Done.")
+        QgsMessageLog.logMessage("Loading {file_path}".format(
+            file_path=file_path), MESSAGE_CATEGORY, Qgis.Info)
+
         if file_path:
-            load_cases_task = LoadCasesTask()
-            task_id = QgsApplication.taskManager().addTask(load_cases_task)
-            self.dlg.importCaseFileResultLabel.setText("Done. Task ID: {task_id}".format(task_id=task_id))
-        else: 
-            self.dlg.importCaseFileResultLabel.setText("Select an input file from your devise")
+            task = QgsTask.fromFunction(
+                "Load Dycast Cases Task", load_cases_task.run, on_finished=load_cases_task.finished, file_path=file_path)
+            task_id = QgsApplication.taskManager().addTask(task)
+
+            self.dlg.importCaseFileResultLabel.setText(
+                "Running import task. Task ID: {task_id}".format(task_id=task_id))
 
     def run(self):
         """Run method that performs all the real work"""
@@ -258,8 +259,10 @@ class DycastQgisPlugin:
         if self.first_start == True:
             self.first_start = False
             self.dlg = DycastQgisPluginDialog()
-            self.dlg.importCaseFileBrowseButton.clicked.connect(self.select_input_file)
-            self.dlg.importCaseFileStartButton.clicked.connect(self.import_input_file)
+            self.dlg.importCaseFileBrowseButton.clicked.connect(
+                self.select_input_file)
+            self.dlg.importCaseFileStartButton.clicked.connect(
+                self.import_input_file)
 
         # show the dialog
         self.dlg.show()
