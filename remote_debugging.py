@@ -1,3 +1,5 @@
+import sys
+import traceback
 from qgis.core import QgsMessageLog, Qgis
 
 
@@ -12,10 +14,11 @@ def enable_remote_debugging():
             return
         ptvsd.enable_attach(address=('localhost', 5678))
         QgsMessageLog.logMessage("Attached remote Debug for Visual Studio", MESSAGE_CATEGORY, Qgis.Info)
-    except ptvsd.AttachAlreadyEnabledError:
-        QgsMessageLog.logMessage("Remote Debug for Visual Studio is already active", MESSAGE_CATEGORY, Qgis.Info)
-        pass
     except Exception as e:
-        QgsMessageLog.logMessage(type(e.__name__), MESSAGE_CATEGORY, Qgis.Critical)
-        QgsMessageLog.logMessage(e.args, MESSAGE_CATEGORY, Qgis.Critical)
-        QgsMessageLog.logMessage(str(e), MESSAGE_CATEGORY, Qgis.Critical)
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        format_exception = traceback.format_exception(exc_type, exc_value, exc_traceback)
+        QgsMessageLog.logMessage(repr(format_exception[0]), MESSAGE_CATEGORY, Qgis.Critical)
+        QgsMessageLog.logMessage(repr(format_exception[1]), MESSAGE_CATEGORY, Qgis.Critical)
+        QgsMessageLog.logMessage(repr(format_exception[2]), MESSAGE_CATEGORY, Qgis.Critical)
+
+        # Make generic exception logger method ^
