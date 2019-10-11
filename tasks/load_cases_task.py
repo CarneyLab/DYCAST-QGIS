@@ -1,38 +1,45 @@
-from qgis.core import QgsTask, QgsMessageLog
+import sys
+import os
+import subprocess
 import ptvsd
+
+from qgis.core import QgsTask, QgsMessageLog, Qgis
 
 from util.redirect_stdout import redirect_stdout
 
 MESSAGE_CATEGORY = 'Messages'
 
-class LoadCasesTask(QgsTask):
-    """Runs the load_cases command in Dycast"""
 
-    def __init__(self):
-        super().__init__("Test load cases")
-        self.expection = None
+def get_current_directory():
+    return os.path.dirname(os.path.realpath(__file__))
 
-    def run(self):
-        QgsMessageLog.logMessage("Started load_cases task", MESSAGE_CATEGORY, QgsMessageLog.INFO)
-        try:
-            from .dycast_app.dycast import main as dycast_main
-            return True
-        except Exception as e:
-            self.exception = e
-            return False
-    
-    def finished(self, result):
-        if result:
-            QgsMessageLog.logMessage("Succesfully finished the load_cases task", MESSAGE_CATEGORY, QgsMessageLog.SUCCESS)
-        else:
-            if self.exception:
-                QgsMessageLog.logMessage("Failed to run the load_cases task. \
-                 Exception: {exception}".format(exception=self.exception), \
-                 MESSAGE_CATEGORY, QgsMessageLog.CRITICAL)
-                raise self.exception
-            else:
-                QgsMessageLog.logMessage("Failed to run the load_cases task. \
-                 No exception was raised", \
-                 MESSAGE_CATEGORY, QgsMessageLog.WARNING)
-
+def run(task, file_path):
     ptvsd.debug_this_thread()
+    QgsMessageLog.logMessage("Started load_cases task",
+                             MESSAGE_CATEGORY, Qgis.Info)
+    with redirect_stdout():
+        from dycast_app.dycast import main as dycast_main
+        from dycast_app.models.classes import dycast_parameters
+
+        try:
+            dycast_main(["load_cases", "--srid-cases",
+                        "3857", "--file", file_path])
+            return "Success!"
+        except Exception as e:
+            return str(e) 
+
+def finished(exception, result=None, ):
+    if result:
+        QgsMessageLog.logMessage(
+            "Succesfully finished the load_cases task", MESSAGE_CATEGORY, Qgis.Success)
+    else:
+        if exception:
+            QgsMessageLog.logMessage("Failed to run the load_cases task. \
+                Exception: {exception}".format(exception=exception),
+                                     MESSAGE_CATEGORY, Qgis.Critical)
+
+            raise exception
+
+        QgsMessageLog.logMessage("Failed to run the load_cases task. \
+                No exception was raised",
+                                 MESSAGE_CATEGORY, Qgis.Warning)
