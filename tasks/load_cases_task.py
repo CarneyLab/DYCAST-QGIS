@@ -21,12 +21,10 @@ def run(task, file_path):
         from dycast_app.dycast import main as dycast_main
         from dycast_app.models.classes import dycast_parameters
 
-        try:
-            dycast_main(["load_cases", "--srid-cases",
-                        "3857", "--file", file_path])
-            return "Success!"
-        except Exception as e:
-            return str(e) 
+        dycast_main(["load_cases", "--srid-cases",
+                    "3857", "--file", file_path])
+        return "Success!"
+
 
 def finished(exception, result=None, ):
     if result:
