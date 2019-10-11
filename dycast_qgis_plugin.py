@@ -98,6 +98,10 @@ class DycastQgisPlugin:
 
             QgsMessageLog.logMessage("Path: {path}".format(path=sys.path),
                                      MESSAGE_CATEGORY, Qgis.Info)
+        else:
+            QgsMessageLog.logMessage("Plugin directory [{current_directory}] is present in path"
+                                     .format(current_directory=current_directory),
+                                     MESSAGE_CATEGORY, Qgis.Info)
 
     def add_dycast_to_path(self, current_directory):
         dycast_path = os.path.join(current_directory, 'dycast_app')
@@ -108,6 +112,10 @@ class DycastQgisPlugin:
 
             sys.path.append(dycast_path)
             QgsMessageLog.logMessage("Path: {path}".format(path=sys.path),
+                                     MESSAGE_CATEGORY, Qgis.Info)
+        else:
+            QgsMessageLog.logMessage("Dycast directory [{dycast_path}] is present in path"
+                                     .format(dycast_path=dycast_path),
                                      MESSAGE_CATEGORY, Qgis.Info)
 
     # noinspection PyMethodMayBeStatic
