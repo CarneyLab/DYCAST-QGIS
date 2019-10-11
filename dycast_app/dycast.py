@@ -4,6 +4,9 @@ import sys
 
 import configargparse
 
+from util.custom_excepthook import custom_excepthook
+sys.excepthook = custom_excepthook
+
 from models.classes import dycast_parameters
 from services import config_service
 from services import conversion_service
@@ -24,7 +27,7 @@ def valid_date(date_string):
         return conversion_service.get_date_object_from_string(date_string)
     except ValueError as e:
         logging.exception("Invalid date format: %s", date_string)
-        sys.exit(1)
+        raise
 
 
 
