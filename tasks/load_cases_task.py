@@ -1,6 +1,8 @@
 from qgis.core import QgsTask, QgsMessageLog
 import ptvsd
 
+from util.redirect_stdout import redirect_stdout
+
 MESSAGE_CATEGORY = 'Messages'
 
 class LoadCasesTask(QgsTask):
