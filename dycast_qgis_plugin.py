@@ -29,17 +29,15 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QFileDialog
 from qgis.core import QgsApplication, QgsMessageLog, Qgis, QgsTask
 
-from .dycast_qgis_plugin_dialog import DycastQgisPluginDialog
+from .util.configure_path import configure_path
+configure_path()
 
+from .dycast_qgis_plugin_dialog import DycastQgisPluginDialog
 from .resources import *
 from .tasks import load_cases_task
-from .remote_debugging import enable_remote_debugging
+from .util.remote_debugging import enable_remote_debugging
 
 MESSAGE_CATEGORY = 'Messages'
-
-
-def get_current_directory():
-    return os.path.dirname(os.path.realpath(__file__))
 
 
 class DycastQgisPlugin:
@@ -79,43 +77,6 @@ class DycastQgisPlugin:
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
         self.first_start = None
-
-        self.configure_path()
-
-    def configure_path(self):
-        current_directory = get_current_directory()
-        self.add_plugin_to_path(current_directory)
-        self.add_dycast_to_path(current_directory)
-
-    def add_plugin_to_path(self, current_directory):
-        if current_directory not in sys.path:
-            QgsMessageLog.logMessage("Adding [{current_directory}] to path"
-                                     .format(current_directory=current_directory),
-                                     MESSAGE_CATEGORY, Qgis.Info)
-
-            sys.path.append(current_directory)
-
-            QgsMessageLog.logMessage("Path: {path}".format(path=sys.path),
-                                     MESSAGE_CATEGORY, Qgis.Info)
-        else:
-            QgsMessageLog.logMessage("Plugin directory [{current_directory}] is present in path"
-                                     .format(current_directory=current_directory),
-                                     MESSAGE_CATEGORY, Qgis.Info)
-
-    def add_dycast_to_path(self, current_directory):
-        dycast_path = os.path.join(current_directory, 'dycast_app')
-        if dycast_path not in sys.path:
-            QgsMessageLog.logMessage("Adding [{dycast_path}] to path"
-                                     .format(dycast_path=dycast_path),
-                                     MESSAGE_CATEGORY, Qgis.Info)
-
-            sys.path.append(dycast_path)
-            QgsMessageLog.logMessage("Path: {path}".format(path=sys.path),
-                                     MESSAGE_CATEGORY, Qgis.Info)
-        else:
-            QgsMessageLog.logMessage("Dycast directory [{dycast_path}] is present in path"
-                                     .format(dycast_path=dycast_path),
-                                     MESSAGE_CATEGORY, Qgis.Info)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
