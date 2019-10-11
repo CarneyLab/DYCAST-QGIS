@@ -6,12 +6,13 @@ MESSAGE_CATEGORY = 'Messages'
 
 
 def configure_path():
-    current_directory = get_current_directory()
+    current_directory = get_root_directory()
     add_plugin_to_path(current_directory)
     add_dycast_to_path(current_directory)
 
-def get_current_directory():
-    return os.path.dirname(os.path.realpath(__file__))
+def get_root_directory():
+    current_directory = os.path.dirname(os.path.realpath(__file__))
+    return os.path.join(current_directory, "..")
 
 def add_plugin_to_path(current_directory):
     if current_directory not in sys.path:
