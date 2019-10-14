@@ -19,7 +19,6 @@ def run(task, file_path):
                              MESSAGE_CATEGORY, Qgis.Info)
     with redirect_stdout():
         from dycast_app.dycast import main as dycast_main
-        from dycast_app.models.classes import dycast_parameters
 
         dycast_main(["load_cases", "--srid-cases",
                     "3857", "--file", file_path])
