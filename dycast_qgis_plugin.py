@@ -205,10 +205,15 @@ class DycastQgisPlugin:
         if file_path:
             task = QgsTask.fromFunction(
                 "Load Dycast Cases Task", load_cases_task.run, on_finished=load_cases_task.finished, file_path=file_path)
+
+            task.taskCompleted.connect(lambda: self.dlg.importCaseFileResultLabel.setText(task.returned_values))
             task_id = QgsApplication.taskManager().addTask(task)
 
             self.dlg.importCaseFileResultLabel.setText(
                 "Running import task. Task ID: {task_id}".format(task_id=task_id))
+        else:
+            self.dlg.importCaseFileResultLabel.setText(
+                "Select an input file from your devise")
 
     def run(self):
         """Run method that performs all the real work"""
