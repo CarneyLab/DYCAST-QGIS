@@ -32,12 +32,12 @@ from qgis.core import QgsApplication, QgsMessageLog, Qgis, QgsTask
 from .util.configure_path import configure_path
 configure_path()
 
-from .models.configuration import Configuration
-from .services.database_service import DatabaseService
-from .util.remote_debugging import enable_remote_debugging
-from .tasks import load_cases_task
-from .resources import *
-from .dycast_qgis_plugin_dialog import DycastQgisPluginDialog
+from dycast_qgis.models.configuration import Configuration
+from dycast_qgis.services.database_service import DatabaseService
+from dycast_qgis.util.remote_debugging import enable_remote_debugging
+from dycast_qgis.tasks import load_cases_task
+from dycast_qgis.resources import *
+from dycast_qgis.dycast_qgis_plugin_dialog import DycastQgisPluginDialog
 
 MESSAGE_CATEGORY = 'Messages'
 
