@@ -192,7 +192,7 @@ class DycastQgisPlugin:
         file_path, filter_string = QFileDialog.getOpenFileName(
             parent=self.dlg,
             caption="Select input file...",
-            filter='CSV (*.csv);; TSV (*.tsv)')
+            filter='TSV (*.tsv)')
 
         self.dlg.importCaseFileLineEdit.setText(file_path)
         return file_path
