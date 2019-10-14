@@ -21,8 +21,10 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os
 import os.path
 import sys
+import traceback
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
