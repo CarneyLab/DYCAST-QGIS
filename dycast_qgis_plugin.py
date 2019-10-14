@@ -23,8 +23,6 @@
 """
 import os
 import os.path
-import sys
-import traceback
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
@@ -34,10 +32,12 @@ from qgis.core import QgsApplication, QgsMessageLog, Qgis, QgsTask
 from .util.configure_path import configure_path
 configure_path()
 
-from .dycast_qgis_plugin_dialog import DycastQgisPluginDialog
-from .resources import *
-from .tasks import load_cases_task
+from .models.configuration import Configuration
+from .services.database_service import DatabaseService
 from .util.remote_debugging import enable_remote_debugging
+from .tasks import load_cases_task
+from .resources import *
+from .dycast_qgis_plugin_dialog import DycastQgisPluginDialog
 
 MESSAGE_CATEGORY = 'Messages'
 
@@ -53,7 +53,7 @@ class DycastQgisPlugin:
             application at run time.
         :type iface: QgsInterface
         """
-        
+
         enable_remote_debugging()
 
         # Save reference to the QGIS interface
@@ -80,6 +80,8 @@ class DycastQgisPlugin:
         # Must be set in initGui() to survive plugin reloads
         self.first_start = None
 
+        self.config = Configuration()
+        self.database_service = DatabaseService(self.config)
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
@@ -208,7 +210,8 @@ class DycastQgisPlugin:
             task = QgsTask.fromFunction(
                 "Load Dycast Cases Task", load_cases_task.run, on_finished=load_cases_task.finished, file_path=file_path)
 
-            task.taskCompleted.connect(lambda: self.dlg.importCaseFileResultLabel.setText(task.returned_values))
+            task.taskCompleted.connect(
+                lambda: self.dlg.importCaseFileResultLabel.setText(task.returned_values))
             task_id = QgsApplication.taskManager().addTask(task)
 
             self.dlg.importCaseFileResultLabel.setText(
@@ -227,6 +230,11 @@ class DycastQgisPlugin:
         if self.first_start == True:
             self.first_start = False
             self.dlg = DycastQgisPluginDialog()
+
+            can_connect = self.database_service.check_can_connect_db()
+            self.dlg.databaseServerStatusLabel.setText("Database reachable: {can_connect}"
+                                                       .format(can_connect=can_connect))
+
             self.dlg.importCaseFileBrowseButton.clicked.connect(
                 self.select_input_file)
             self.dlg.importCaseFileStartButton.clicked.connect(
