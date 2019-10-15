@@ -38,6 +38,7 @@ from dycast_qgis.util.remote_debugging import enable_remote_debugging
 from dycast_qgis.tasks import load_cases_task
 from dycast_qgis.resources import *
 from dycast_qgis.dycast_qgis_plugin_dialog import DycastQgisPluginDialog
+from dycast_qgis.settings_dialog import SettingsDialog
 
 MESSAGE_CATEGORY = 'Messages'
 
@@ -230,6 +231,7 @@ class DycastQgisPlugin:
         if self.first_start == True:
             self.first_start = False
             self.dlg = DycastQgisPluginDialog()
+            self.settings_dialog = SettingsDialog()
 
             can_connect = self.database_service.check_can_connect_db()
             self.dlg.databaseServerStatusLabel.setText("Database reachable: {can_connect}"
@@ -239,6 +241,9 @@ class DycastQgisPlugin:
                 self.select_input_file)
             self.dlg.importCaseFileStartButton.clicked.connect(
                 self.import_input_file)
+
+            self.dlg.settingsPushButton.clicked.connect(
+                self.settings_dialog.show)
 
         # show the dialog
         self.dlg.show()
