@@ -19,6 +19,7 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.initialize_fields(config)
         self.settingsDialogButtonBox.accepted.connect(lambda: self.on_save(config))
         self.settingsDialogButtonBox.rejected.connect(lambda: self.on_cancel(config))
+        self.export_environment_variables(config)
 
     def on_cancel(self, config: Configuration):
         self.initialize_fields(config)
@@ -30,9 +31,18 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
         config.db_user = self.dbUserLineEdit.text()
         config.db_password = self.dbPasswordLineEdit.text()
 
+        self.export_environment_variables(config)
+
     def initialize_fields(self, config: Configuration):
         self.dbHostLineEdit.setText(config.db_host)
         self.dbPortLineEdit.setText(config.db_port)
         self.dbNameLineEdit.setText(config.db_name)
         self.dbUserLineEdit.setText(config.db_user)
         self.dbPasswordLineEdit.setText(config.db_password)
+
+    def export_environment_variables(self, config: Configuration):
+        os.environ["DBHOST"] = config.db_host
+        os.environ["DBPORT"] = config.db_port
+        os.environ["DBNAME"] = config.db_name
+        os.environ["DBUSER"] = config.db_user
+        os.environ["DBPASSWORD"] = config.db_password
