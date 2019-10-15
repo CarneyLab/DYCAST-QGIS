@@ -12,7 +12,8 @@ def configure_path():
 
 def get_root_directory():
     current_directory = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(current_directory, "..")
+    return os.path.abspath(
+        os.path.join(current_directory, ".."))
 
 def add_plugin_to_path(current_directory):
     if current_directory not in sys.path:
