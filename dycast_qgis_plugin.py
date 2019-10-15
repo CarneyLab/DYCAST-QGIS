@@ -231,7 +231,8 @@ class DycastQgisPlugin:
         if self.first_start == True:
             self.first_start = False
             self.dlg = DycastQgisPluginDialog()
-            self.settings_dialog = SettingsDialog()
+            
+            self.settings_dialog = SettingsDialog(self.config)
 
             can_connect = self.database_service.check_can_connect_db()
             self.dlg.databaseServerStatusLabel.setText("Database reachable: {can_connect}"
