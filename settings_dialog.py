@@ -20,51 +20,61 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, config: Configuration, config_service: ConfigurationService, database_service: DatabaseService, parent=None):
         """Constructor."""
         super(SettingsDialog, self).__init__(parent)
+        self.config = config
         self.configuration_service = config_service
         self.database_service = database_service
 
         self.setupUi(self)
-        self.initialize_fields(config)
-        self.settingsDialogButtonBox.accepted.connect(lambda: self.on_save(config))
-        self.settingsDialogButtonBox.rejected.connect(lambda: self.on_cancel(config))
-        self.export_environment_variables(config)
+        self.initialize_fields()
 
+        self.settingsDialogButtonBox.accepted.connect(self.on_save)
+        self.settingsDialogButtonBox.rejected.connect(self.on_cancel)
         self.testConnectionPushButton.clicked.connect(self.on_test_connection)
 
-    def on_test_connection(self):
-        can_connect = self.can_connect()
-        self.databaseServerStatusLabel.setText(str(can_connect))
+        self.export_environment_variables(config)
 
-    def can_connect(self):
-        return self.database_service.check_can_connect_db()
+    def on_cancel(self):
+        self.initialize_fields()
 
-    def on_cancel(self, config: Configuration):
-        self.initialize_fields(config)
-
-    def on_save(self, config: Configuration):
-        previous_config = config
+    def on_save(self):
+        config_from_form = self.read_config_from_form()
+        self.export_environment_variables(config_from_form)
         try:
-            config.db_host = self.dbHostLineEdit.text()
-            config.db_port = self.dbPortLineEdit.text()
-            config.db_name = self.dbNameLineEdit.text()
-            config.db_user = self.dbUserLineEdit.text()
-            config.db_password = self.dbPasswordLineEdit.text()
-
-            self.export_environment_variables(config)
-            self.config_service.persist_config(config)
-
+            self.config_service.persist_config(config_from_form)
+            self.config = config_from_form
         except Exception as e:
             QgsMessageLog.logMessage("Failed to save settings, rolling back to previous configuration. \
                 Exception: {exception}".format(exception=e),
                                      MESSAGE_CATEGORY, Qgis.Critical)
-            config = previous_config
+            self.export_environment_variables(self.config)
 
-    def initialize_fields(self, config: Configuration):
-        self.dbHostLineEdit.setText(config.db_host)
-        self.dbPortLineEdit.setText(config.db_port)
-        self.dbNameLineEdit.setText(config.db_name)
-        self.dbUserLineEdit.setText(config.db_user)
-        self.dbPasswordLineEdit.setText(config.db_password)
+    def read_config_from_form(self) -> Configuration:
+        config = Configuration()
+
+        config.db_host = self.dbHostLineEdit.text()
+        config.db_port = self.dbPortLineEdit.text()
+        config.db_name = self.dbNameLineEdit.text()
+        config.db_user = self.dbUserLineEdit.text()
+        config.db_password = self.dbPasswordLineEdit.text()
+
+        return config
+
+    def initialize_fields(self):
+        self.dbHostLineEdit.setText(self.config.db_host)
+        self.dbPortLineEdit.setText(self.config.db_port)
+        self.dbNameLineEdit.setText(self.config.db_name)
+        self.dbUserLineEdit.setText(self.config.db_user)
+        self.dbPasswordLineEdit.setText(self.config.db_password)
+
+    def on_test_connection(self):
+        self.databaseServerStatusLabel.setText("Testing...")
+        config = self.read_config_from_form()
+        can_connect = self.can_connect(config)
+        self.databaseServerStatusLabel.setText(str(can_connect))
+
+    def can_connect(self, config: Configuration):
+        database_service = DatabaseService(config)
+        return database_service.check_can_connect_db()
 
     def export_environment_variables(self, config: Configuration):
         os.environ["DBHOST"] = config.db_host
