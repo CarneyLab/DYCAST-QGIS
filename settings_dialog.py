@@ -33,6 +33,13 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
 
         self.export_environment_variables(config)
 
+    def initialize_fields(self):
+        self.dbHostLineEdit.setText(self.config.db_host)
+        self.dbPortLineEdit.setText(self.config.db_port)
+        self.dbNameLineEdit.setText(self.config.db_name)
+        self.dbUserLineEdit.setText(self.config.db_user)
+        self.dbPasswordLineEdit.setText(self.config.db_password)
+ 
     def on_cancel(self):
         self.initialize_fields()
 
@@ -59,20 +66,13 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
 
         return config
 
-    def initialize_fields(self):
-        self.dbHostLineEdit.setText(self.config.db_host)
-        self.dbPortLineEdit.setText(self.config.db_port)
-        self.dbNameLineEdit.setText(self.config.db_name)
-        self.dbUserLineEdit.setText(self.config.db_user)
-        self.dbPasswordLineEdit.setText(self.config.db_password)
-
     def on_test_connection(self):
         self.databaseServerStatusLabel.setText("Testing...")
         config = self.read_config_from_form()
         can_connect = self.can_connect(config)
         self.databaseServerStatusLabel.setText(str(can_connect))
 
-    def can_connect(self, config: Configuration):
+    def can_connect(self, config: Configuration) -> bool:
         database_service = DatabaseService(config)
         return database_service.check_can_connect_db()
 
