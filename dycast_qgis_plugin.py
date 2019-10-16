@@ -234,12 +234,7 @@ class DycastQgisPlugin:
         if self.first_start == True:
             self.first_start = False
             self.dlg = DycastQgisPluginDialog()
-            
-            self.settings_dialog = SettingsDialog(self.config, self.config_service)
-
-            can_connect = self.database_service.check_can_connect_db()
-            self.dlg.databaseServerStatusLabel.setText("Database reachable: {can_connect}"
-                                                       .format(can_connect=can_connect))
+            self.settings_dialog = SettingsDialog(self.config, self.config_service, self.database_service)
 
             self.dlg.importCaseFileBrowseButton.clicked.connect(
                 self.select_input_file)

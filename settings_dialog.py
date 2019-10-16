@@ -5,6 +5,7 @@ from qgis.PyQt import QtWidgets
 from qgis.core import QgsMessageLog, Qgis
 
 from dycast_qgis.services.configuration_service import ConfigurationService
+from dycast_qgis.services.database_service import DatabaseService
 from dycast_qgis.models.configuration import Configuration
 
 
@@ -16,19 +17,31 @@ MESSAGE_CATEGORY = 'Messages'
 
 
 class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
-    def __init__(self, config: Configuration, config_service: ConfigurationService, parent=None):
+    def __init__(self, config: Configuration, config_service: ConfigurationService, database_service: DatabaseService, parent=None):
         """Constructor."""
         super(SettingsDialog, self).__init__(parent)
+        self.configuration_service = config_service
+        self.database_service = database_service
+
         self.setupUi(self)
         self.initialize_fields(config)
-        self.settingsDialogButtonBox.accepted.connect(lambda: self.on_save(config, config_service))
+        self.settingsDialogButtonBox.accepted.connect(lambda: self.on_save(config))
         self.settingsDialogButtonBox.rejected.connect(lambda: self.on_cancel(config))
         self.export_environment_variables(config)
+
+        self.testConnectionPushButton.clicked.connect(self.on_test_connection)
+
+    def on_test_connection(self):
+        can_connect = self.can_connect()
+        self.databaseServerStatusLabel.setText(str(can_connect))
+
+    def can_connect(self):
+        return self.database_service.check_can_connect_db()
 
     def on_cancel(self, config: Configuration):
         self.initialize_fields(config)
 
-    def on_save(self, config: Configuration, config_service: ConfigurationService):
+    def on_save(self, config: Configuration):
         previous_config = config
         try:
             config.db_host = self.dbHostLineEdit.text()
@@ -38,7 +51,7 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
             config.db_password = self.dbPasswordLineEdit.text()
 
             self.export_environment_variables(config)
-            config_service.persist_config(config)
+            self.config_service.persist_config(config)
 
         except Exception as e:
             QgsMessageLog.logMessage("Failed to save settings, rolling back to previous configuration. \
