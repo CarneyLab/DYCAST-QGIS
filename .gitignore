@@ -103,3 +103,4 @@ venv.bak/
 # mypy
 .mypy_cache/
 dycast_app/dycast_log.txt
+dycast_qgis.config
