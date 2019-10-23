@@ -1,11 +1,11 @@
 import sys
 import os
 import subprocess
-import ptvsd
 
-from qgis.core import QgsTask, QgsMessageLog, Qgis
+from qgis.core import Qgis
 
 from util.redirect_stdout import redirect_stdout
+from dycast_qgis.services.logging_service import log_message, log_exception
 
 MESSAGE_CATEGORY = 'Messages'
 
@@ -15,9 +15,7 @@ def get_current_directory():
 
 
 def run(task, file_path):
-    ptvsd.debug_this_thread()
-    QgsMessageLog.logMessage("Started load_cases task",
-                             MESSAGE_CATEGORY, Qgis.Info)
+    log_message("Started load_cases task", Qgis.Info)
     with redirect_stdout():
         from dycast_app.dycast import main as dycast_main
 
@@ -28,16 +26,12 @@ def run(task, file_path):
 
 def finished(exception, result=None, ):
     if result:
-        QgsMessageLog.logMessage(
-            "Succesfully finished the load_cases task", MESSAGE_CATEGORY, Qgis.Success)
+        log_message("Succesfully finished the load_cases task", Qgis.Success)
     else:
         if exception:
-            QgsMessageLog.logMessage("Failed to run the load_cases task. \
-                Exception: {exception}".format(exception=exception),
-                                     MESSAGE_CATEGORY, Qgis.Critical)
-
+            log_message("Failed to run the load_cases task.", Qgis.Critical)
+            log_exception(exception)
             raise exception
 
-        QgsMessageLog.logMessage("Failed to run the load_cases task. \
-                No exception was raised",
-                                 MESSAGE_CATEGORY, Qgis.Warning)
+        log_message(
+            "Failed to run the load_cases task. No exception was raised", Qgis.Warning)

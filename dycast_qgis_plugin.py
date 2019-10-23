@@ -207,8 +207,7 @@ class DycastQgisPlugin:
 
     def import_input_file(self):
         file_path = self.dlg.importCaseFileLineEdit.text()
-        QgsMessageLog.logMessage("Loading {file_path}".format(
-            file_path=file_path), MESSAGE_CATEGORY, Qgis.Info)
+        log_message("Loading {file_path}".format(file_path=file_path), Qgis.Info)
 
         if file_path:
             task = QgsTask.fromFunction(

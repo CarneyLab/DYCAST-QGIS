@@ -6,8 +6,8 @@ from qgis.core import QgsMessageLog, Qgis
 
 from dycast_qgis.services.configuration_service import ConfigurationService
 from dycast_qgis.services.database_service import DatabaseService
+from dycast_qgis.services.logging_service import log_message, log_exception
 from dycast_qgis.models.configuration import Configuration
-
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -39,7 +39,7 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.dbNameLineEdit.setText(self.config.db_name)
         self.dbUserLineEdit.setText(self.config.db_user)
         self.dbPasswordLineEdit.setText(self.config.db_password)
- 
+
     def on_cancel(self):
         self.initialize_fields()
 
@@ -50,9 +50,9 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
             self.config_service.persist_config(config_from_form)
             self.config = config_from_form
         except Exception as e:
-            QgsMessageLog.logMessage("Failed to save settings, rolling back to previous configuration. \
-                Exception: {exception}".format(exception=e),
-                                     MESSAGE_CATEGORY, Qgis.Critical)
+            log_message("Failed to save settings, rolling back to previous configuration. \
+                Exception: {exception}".format(exception=e), Qgis.Critical)
+            log_exception(e)
             self.export_environment_variables(self.config)
 
     def read_config_from_form(self) -> Configuration:
