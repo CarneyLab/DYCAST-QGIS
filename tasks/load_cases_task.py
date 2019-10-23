@@ -13,6 +13,7 @@ MESSAGE_CATEGORY = 'Messages'
 def get_current_directory():
     return os.path.dirname(os.path.realpath(__file__))
 
+
 def run(task, file_path):
     ptvsd.debug_this_thread()
     QgsMessageLog.logMessage("Started load_cases task",
@@ -21,7 +22,7 @@ def run(task, file_path):
         from dycast_app.dycast import main as dycast_main
 
         dycast_main(["load_cases", "--srid-cases",
-                    "3857", "--file", file_path])
+                     "3857", "--file", file_path])
         return "Success!"
 
 
