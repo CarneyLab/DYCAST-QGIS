@@ -70,12 +70,6 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
     def on_test_connection(self):
         self.databaseServerStatusLabel.setText("Testing...")
         config = self.read_config_from_form()
-    def export_environment_variables(self, config: Configuration):
-        os.environ["DBHOST"] = config.db_host
-        os.environ["DBPORT"] = config.db_port
-        os.environ["DBNAME"] = config.db_name
-        os.environ["DBUSER"] = config.db_user
-        os.environ["DBPASSWORD"] = config.db_password
 
         task = QgsTask.fromFunction("Test Database Connection Task",
                                     test_connection_task.run, on_finished=test_connection_task.finished, config=config)

@@ -26,3 +26,9 @@ class ConfigurationService():
             return pickle.load(open(self.config_file_path, "rb"))
         except (FileNotFoundError, EOFError, TypeError):
             return Configuration()
+    def export_environment_variables(self, config: Configuration):
+        os.environ["DBHOST"] = config.db_host
+        os.environ["DBPORT"] = config.db_port
+        os.environ["DBNAME"] = config.db_name
+        os.environ["DBUSER"] = config.db_user
+        os.environ["DBPASSWORD"] = config.db_password
