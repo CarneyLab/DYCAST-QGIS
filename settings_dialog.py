@@ -32,7 +32,7 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.settingsDialogButtonBox.rejected.connect(self.on_cancel)
         self.testConnectionPushButton.clicked.connect(self.on_test_connection)
 
-        self.export_environment_variables(config)
+        self.configuration_service.export_environment_variables(config)
 
     def initialize_fields(self):
         self.dbHostLineEdit.setText(self.config.db_host)
@@ -46,9 +46,9 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def on_save(self):
         config_from_form = self.read_config_from_form()
-        self.export_environment_variables(config_from_form)
         try:
-            self.config_service.persist_config(config_from_form)
+            self.configuration_service.persist_config(config_from_form)
+            self.configuration_service.export_environment_variables(config_from_form)
             self.config = config_from_form
         except Exception as e:
             log_message("Failed to save settings, rolling back to previous configuration. \
