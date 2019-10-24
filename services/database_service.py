@@ -12,7 +12,7 @@ class DatabaseService():
         self.config = config
 
     def check_can_connect_db(self) -> bool:
-        engine = self.db_connect()
+        engine = self.db_connect("postgres")
         try:
             engine.connect()
             return True
@@ -22,17 +22,17 @@ class DatabaseService():
     def check_if_db_exists(self) -> bool:
         return database_exists(self.get_sqlalchemy_conn_string())
 
-    def db_connect(self):
+    def db_connect(self, db_name=None):
         """
         Connect to database.
         Returns sqlalchemy engine instance
         """
-        return create_engine(self.get_sqlalchemy_conn_string())
+        return create_engine(self.get_sqlalchemy_conn_string(db_name))
 
-    def get_sqlalchemy_conn_string(self):
-        return URL(drivername="postgres",
+    def get_sqlalchemy_conn_string(self, db_name=None):
+        return URL(drivername="postgresql",
                    host=self.config.db_host,
                    port=self.config.db_port,
                    username=self.config.db_user,
                    password=self.config.db_password,
-                   database=self.config.db_name)
+                   database=db_name or self.config.db_name)
