@@ -2,8 +2,9 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
-from qgis.core import QgsMessageLog, Qgis
+from qgis.core import QgsApplication, Qgis, QgsTask
 
+from dycast_qgis.tasks import test_connection_task
 from dycast_qgis.services.configuration_service import ConfigurationService
 from dycast_qgis.services.database_service import DatabaseService
 from dycast_qgis.services.logging_service import log_message, log_exception
@@ -69,16 +70,16 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
     def on_test_connection(self):
         self.databaseServerStatusLabel.setText("Testing...")
         config = self.read_config_from_form()
-        can_connect = self.can_connect(config)
-        self.databaseServerStatusLabel.setText(str(can_connect))
-
-    def can_connect(self, config: Configuration) -> bool:
-        database_service = DatabaseService(config)
-        return database_service.check_can_connect_db()
-
     def export_environment_variables(self, config: Configuration):
         os.environ["DBHOST"] = config.db_host
         os.environ["DBPORT"] = config.db_port
         os.environ["DBNAME"] = config.db_name
         os.environ["DBUSER"] = config.db_user
         os.environ["DBPASSWORD"] = config.db_password
+
+        task = QgsTask.fromFunction("Test Database Connection Task",
+                                    test_connection_task.run, on_finished=test_connection_task.finished, config=config)
+
+        task.taskCompleted.connect(
+            lambda: self.databaseServerStatusLabel.setText(str(task.returned_values['can_connect'])))
+        QgsApplication.taskManager().addTask(task)
