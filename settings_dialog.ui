@@ -181,7 +181,7 @@
      <x>20</x>
      <y>200</y>
      <width>301</width>
-     <height>51</height>
+     <height>91</height>
     </rect>
    </property>
    <property name="title">
@@ -190,10 +190,10 @@
    <widget class="QLabel" name="databaseServerStatusLabel">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>100</x>
       <y>20</y>
-      <width>91</width>
-      <height>16</height>
+      <width>81</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
@@ -216,14 +216,53 @@
    <widget class="QPushButton" name="testConnectionPushButton">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>184</x>
       <y>20</y>
-      <width>75</width>
+      <width>101</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Test</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Database exists:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="createDatabasePushButton">
+    <property name="geometry">
+     <rect>
+      <x>183</x>
+      <y>56</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Create database</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="createDatabaseStatusLabel">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>60</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

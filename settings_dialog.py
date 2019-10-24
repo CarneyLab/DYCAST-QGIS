@@ -31,6 +31,7 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.settingsDialogButtonBox.accepted.connect(self.on_save)
         self.settingsDialogButtonBox.rejected.connect(self.on_cancel)
         self.testConnectionPushButton.clicked.connect(self.on_test_connection)
+        self.createDatabasePushButton.clicked.connect(self.on_create_database)
 
         self.configuration_service.export_environment_variables(config)
 
@@ -76,4 +77,10 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
 
         task.taskCompleted.connect(
             lambda: self.databaseServerStatusLabel.setText(str(task.returned_values['can_connect'])))
+        task.taskCompleted.connect(
+            lambda: self.createDatabaseStatusLabel.setText(str(task.returned_values['db_exists'])))
+
         QgsApplication.taskManager().addTask(task)
+
+    def on_create_database(self):
+        config = self.read_config_from_form()
