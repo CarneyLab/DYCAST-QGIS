@@ -3,7 +3,7 @@ from sqlalchemy.engine.url import URL
 from sqlalchemy.exc import OperationalError
 from sqlalchemy_utils import database_exists
 
-from models.configuration import Configuration
+from dycast_qgis.models.configuration import Configuration
 
 
 class DatabaseService():

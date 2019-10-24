@@ -1,7 +1,7 @@
 import os
 import pickle
 
-from models.configuration import Configuration
+from dycast_qgis.models.configuration import Configuration
 
 
 class ConfigurationService():
