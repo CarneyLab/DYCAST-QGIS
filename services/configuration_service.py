@@ -17,15 +17,21 @@ class ConfigurationService():
             os.path.join(current_directory, ".."))
 
     def persist_config(self, config: Configuration):
-        config_file = open(self.config_file_path, "wb")
-        pickle.dump(config, config_file)
-        config_file.close()
+        try:
+            config_file = open(self.config_file_path, "wb")
+            pickle.dump(config, config_file)
+        finally:
+            config_file.close()
 
     def load_config(self):
         try:
-            return pickle.load(open(self.config_file_path, "rb"))
+            config_file = open(self.config_file_path, "rb")
+            return pickle.load(config_file)
         except (FileNotFoundError, EOFError, TypeError):
             return Configuration()
+        finally:
+            config_file.close()
+
     def export_environment_variables(self, config: Configuration):
         os.environ["DBHOST"] = config.db_host
         os.environ["DBPORT"] = config.db_port
