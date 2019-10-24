@@ -27,7 +27,7 @@ import os.path
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QFileDialog
-from qgis.core import QgsApplication, QgsMessageLog, Qgis, QgsTask
+from qgis.core import QgsApplication, Qgis, QgsTask
 
 from .util.configure_path import configure_path
 configure_path()
@@ -35,13 +35,12 @@ configure_path()
 from dycast_qgis.models.configuration import Configuration
 from dycast_qgis.services.configuration_service import ConfigurationService
 from dycast_qgis.services.database_service import DatabaseService
+from dycast_qgis.services.logging_service import log_message
 from dycast_qgis.util.remote_debugging import enable_remote_debugging
 from dycast_qgis.tasks import load_cases_task
 from dycast_qgis.resources import *
 from dycast_qgis.dycast_qgis_plugin_dialog import DycastQgisPluginDialog
 from dycast_qgis.settings_dialog import SettingsDialog
-
-MESSAGE_CATEGORY = 'Messages'
 
 
 class DycastQgisPlugin:
