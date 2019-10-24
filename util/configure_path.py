@@ -6,8 +6,8 @@ from dycast_qgis.services.logging_service import log_message, log_exception
 
 def configure_path():
     current_directory = get_root_directory()
-    add_plugin_to_path(current_directory)
     add_dycast_to_path(current_directory)
+    add_plugin_to_path(current_directory)
 
 
 def get_root_directory():
