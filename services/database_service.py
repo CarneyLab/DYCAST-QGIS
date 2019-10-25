@@ -18,12 +18,14 @@ class DatabaseService():
             return True
         except OperationalError:
             return False
+        finally:
+            engine.dispose()
 
     def check_if_db_exists(self) -> bool:
         try:
             return database_exists(self.get_sqlalchemy_conn_string())
         except OperationalError:
-            return False        
+            return False
 
     def db_connect(self, db_name=None):
         """
