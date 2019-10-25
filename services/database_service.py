@@ -20,7 +20,10 @@ class DatabaseService():
             return False
 
     def check_if_db_exists(self) -> bool:
-        return database_exists(self.get_sqlalchemy_conn_string())
+        try:
+            return database_exists(self.get_sqlalchemy_conn_string())
+        except OperationalError:
+            return False        
 
     def db_connect(self, db_name=None):
         """
