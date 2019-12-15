@@ -4,7 +4,7 @@ from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from qgis.core import QgsApplication, Qgis, QgsTask
 
-from dycast_qgis.tasks import test_connection_task
+from dycast_qgis.tasks import test_connection_task, create_database_task
 from dycast_qgis.services.configuration_service import ConfigurationService
 from dycast_qgis.services.database_service import DatabaseService
 from dycast_qgis.services.logging_service import log_message, log_exception
@@ -78,9 +78,21 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
         task.taskCompleted.connect(
             lambda: self.databaseServerStatusLabel.setText(str(task.returned_values['can_connect'])))
         task.taskCompleted.connect(
-            lambda: self.createDatabaseStatusLabel.setText(str(task.returned_values['db_exists'])))
+            lambda: self.checkDatabaseStatusLabel.setText(str(task.returned_values['db_exists'])))
 
         QgsApplication.taskManager().addTask(task)
 
     def on_create_database(self):
+        log_message("Starting task...", Qgis.Info)
         config = self.read_config_from_form()
+        self.configuration_service.export_environment_variables(config)
+
+        force = self.checkDatabaseForceCheckBox.isChecked()
+
+        task = QgsTask.fromFunction(
+            "Create Dycast Database Task", create_database_task.run, on_finished=create_database_task.finished, config=config, force=force)
+
+        task.taskCompleted.connect(
+            lambda: self.checkDatabaseStatusLabel.setText(str(task.returned_values['db_exists']) or "Error"))
+
+        QgsApplication.taskManager().addTask(task)
