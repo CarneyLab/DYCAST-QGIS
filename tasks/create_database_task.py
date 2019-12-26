@@ -22,7 +22,7 @@ def check_if_db_exists(config: Configuration) -> bool:
 def run(task, config: Configuration, force: bool):
     log_message("Started create_database task", Qgis.Info)
 
-    if (check_if_db_exists(config)):
+    if check_if_db_exists(config):
         log_message("Database already exists, skipping...", Qgis.Info)
     else:
         with redirect_stdout():
@@ -31,7 +31,7 @@ def run(task, config: Configuration, force: bool):
             from dycast_app.dycast import main as dycast_main
 
             command = ["setup_dycast", "--monte-carlo-file",
-                    "Dengue_max_100_40000.csv"]
+                       "Dengue_max_100_40000.csv"]
 
             if force:
                 command.append("--force-db-init")
