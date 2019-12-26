@@ -4,9 +4,10 @@ from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from qgis.core import QgsApplication, Qgis, QgsTask
 
-from dycast_qgis.tasks import test_connection_task, create_database_task
+from dycast_qgis.tasks import test_connection_task, create_database_task, initialize_layers_task
 from dycast_qgis.services.configuration_service import ConfigurationService
 from dycast_qgis.services.database_service import DatabaseService
+from dycast_qgis.services.layer_service import LayerService
 from dycast_qgis.services.logging_service import log_message, log_exception
 from dycast_qgis.models.configuration import Configuration
 
@@ -18,12 +19,18 @@ MESSAGE_CATEGORY = 'Messages'
 
 
 class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
-    def __init__(self, config: Configuration, config_service: ConfigurationService, database_service: DatabaseService, parent=None):
+    def __init__(self,
+     config: Configuration,
+     config_service: ConfigurationService,
+     database_service: DatabaseService,
+     layer_service: LayerService,
+     parent=None):
         """Constructor."""
         super(SettingsDialog, self).__init__(parent)
         self.config = config
         self.configuration_service = config_service
         self.database_service = database_service
+        self.layer_service = layer_service
 
         self.setupUi(self)
         self.initialize_fields()
@@ -83,16 +90,34 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
         QgsApplication.taskManager().addTask(task)
 
     def on_create_database(self):
-        log_message("Starting task...", Qgis.Info)
+
         config = self.read_config_from_form()
         self.configuration_service.export_environment_variables(config)
 
         force = self.checkDatabaseForceCheckBox.isChecked()
 
+        self.create_database(config, force)
+
+    def create_database(self, config: Configuration, force: bool):
+        log_message("Starting create_database task...", Qgis.Info)
         task = QgsTask.fromFunction(
             "Create Dycast Database Task", create_database_task.run, on_finished=create_database_task.finished, config=config, force=force)
 
         task.taskCompleted.connect(
             lambda: self.checkDatabaseStatusLabel.setText(str(task.returned_values['db_exists']) or "Error"))
+
+        task.taskCompleted.connect(
+            lambda: self.initialize_layers(config, force))
+
+        QgsApplication.taskManager().addTask(task)
+
+    def initialize_layers(self, config: Configuration, force: bool):
+        log_message("Starting initialize_layers task...", Qgis.Info)
+        task = QgsTask.fromFunction(
+            "Initialize Dycast Layers Task", initialize_layers_task.run, on_finished=initialize_layers_task.finished,
+            layer_service=self.layer_service, config=config, force=force)
+
+        task.taskCompleted.connect(
+            lambda: log_message(str(task.returned_values['success']) or "Error"))
 
         QgsApplication.taskManager().addTask(task)

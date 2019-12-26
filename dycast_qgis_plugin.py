@@ -33,9 +33,12 @@ from .util.configure_path import configure_path
 configure_path()
 
 from dycast_qgis.models.configuration import Configuration
+
 from dycast_qgis.services.configuration_service import ConfigurationService
 from dycast_qgis.services.database_service import DatabaseService
+from dycast_qgis.services.layer_service import LayerService
 from dycast_qgis.services.logging_service import log_message
+
 from dycast_qgis.util.remote_debugging import enable_remote_debugging
 from dycast_qgis.tasks import load_cases_task
 from dycast_qgis.resources import *
@@ -84,6 +87,7 @@ class DycastQgisPlugin:
         self.config_service = ConfigurationService()
         self.config = self.config_service.load_config()
         self.database_service = DatabaseService(self.config)
+        self.layer_service = LayerService()
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -232,7 +236,7 @@ class DycastQgisPlugin:
         if self.first_start == True:
             self.first_start = False
             self.dlg = DycastQgisPluginDialog()
-            self.settings_dialog = SettingsDialog(self.config, self.config_service, self.database_service)
+            self.settings_dialog = SettingsDialog(self.config, self.config_service, self.database_service, self.layer_service)
 
             self.dlg.importCaseFileBrowseButton.clicked.connect(
                 self.select_input_file)
