@@ -21,7 +21,6 @@ def check_if_db_exists(config: Configuration):
 
 def run(task, config: Configuration, force: bool):
     import ptvsd
-    ptvsd.debug_this_thread()
     log_message("Started create_database task", Qgis.Info)
     with redirect_stdout():
         from dycast_app.dycast import main as dycast_main
