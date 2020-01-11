@@ -16,7 +16,11 @@ def run(task, layer_service: LayerService, config: Configuration, force: bool):
     existing_layers = layer_service.get_all_layers()
 
     if not existing_layers:
-        layer_service.initialize_layers()
+        try:
+            layer_service.initialize_layers()
+        except Exception as ex:
+            log_exception(ex)
+            raise
     else:
         log_message("Layers already initialized")
     return {"success": True}
