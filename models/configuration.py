@@ -5,3 +5,4 @@ class Configuration:
         self.db_password = db_password or "postgres"
         self.db_host = db_host or "localhost"
         self.db_port = db_port or "5432"
+        self.db_schema = "public"
