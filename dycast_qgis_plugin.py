@@ -87,7 +87,7 @@ class DycastQgisPlugin:
         self.config_service = ConfigurationService()
         self.config = self.config_service.load_config()
         self.database_service = DatabaseService(self.config)
-        self.layer_service = LayerService()
+        self.layer_service = LayerService(self.config)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):

@@ -5,17 +5,17 @@ from dycast_qgis.models.configuration import Configuration
 from dycast_qgis.services.logging_service import log_message, log_exception
 
 class LayerService():
-
-    def __init__(self, config: Configuration, iface: QgisInterface):
+    def __init__(self, config: Configuration):
         self.config = config
-        self.iface = iface
 
         self.expected_raster_layers = [
             ('OpenStreetMap',
              'type=xyz&url=http://a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857',
              'wms')]
 
-        self.expected_database_layers = {'cases': 'location'}
+        self.expected_database_layers = {
+            'cases': 'location'
+            }
 
     def get_qgs_instance(self):
         return QgsProject.instance()
@@ -31,11 +31,8 @@ class LayerService():
         return self.get_qgs_instance().layerTreeRoot().children()
 
     def initialize_layers(self):
-        import ptvsd
-        ptvsd.debug_this_thread()
-
-        self.add_raster_layers_to_project_instance()
         self.add_database_layers_to_project_instance()
+        self.add_raster_layers_to_project_instance()
         self.add_project_instance_layers_to_root()
 
     def add_raster_layers_to_project_instance(self):
@@ -54,7 +51,7 @@ class LayerService():
         log_message("Layer count 2: {layer_count}".format(layer_count=len(project_instance_layers)))
         for layer in project_instance_layers:
             log_message(layer.name())
-            root.addLayer(layer)
+            root.insertChildNode(-1, QgsLayerTreeLayer(layer))
 
         layer_tree_root = self.get_tree_root_layers()
 

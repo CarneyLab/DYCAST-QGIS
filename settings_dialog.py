@@ -20,11 +20,11 @@ MESSAGE_CATEGORY = 'Messages'
 
 class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self,
-     config: Configuration,
-     config_service: ConfigurationService,
-     database_service: DatabaseService,
-     layer_service: LayerService,
-     parent=None):
+                 config: Configuration,
+                 config_service: ConfigurationService,
+                 database_service: DatabaseService,
+                 layer_service: LayerService,
+                 parent=None):
         """Constructor."""
         super(SettingsDialog, self).__init__(parent)
         self.config = config
@@ -62,7 +62,7 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
             log_message("Failed to save settings, rolling back to previous configuration. \
                 Exception: {exception}".format(exception=e), Qgis.Critical)
             log_exception(e)
-            self.export_environment_variables(self.config)
+            self.configuration_service.export_environment_variables(self.config)
 
     def read_config_from_form(self) -> Configuration:
         config = Configuration()
@@ -101,7 +101,8 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
     def create_database(self, config: Configuration, force: bool):
         log_message("Starting create_database task...", Qgis.Info)
         task = QgsTask.fromFunction(
-            "Create Dycast Database Task", create_database_task.run, on_finished=create_database_task.finished, config=config, force=force)
+            "Create Dycast Database Task",
+            create_database_task.run, on_finished=create_database_task.finished, config=config, force=force)
 
         task.taskCompleted.connect(
             lambda: self.checkDatabaseStatusLabel.setText(str(task.returned_values['db_exists']) or "Error"))
@@ -114,8 +115,9 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS):
     def initialize_layers(self, config: Configuration, force: bool):
         log_message("Starting initialize_layers task...", Qgis.Info)
         task = QgsTask.fromFunction(
-            "Initialize Dycast Layers Task", initialize_layers_task.run, on_finished=initialize_layers_task.finished,
-            layer_service=self.layer_service, config=config, force=force)
+            "Initialize Dycast Layers Task",
+            initialize_layers_task.run, 
+            on_finished=initialize_layers_task.finished, config=config, force=force)
 
         task.taskCompleted.connect(
             lambda: log_message(str(task.returned_values['success']) or "Error"))

@@ -11,9 +11,11 @@ from dycast_qgis.services.layer_service import LayerService
 from dycast_qgis.services.logging_service import log_message, log_exception
 
 
-def run(task, layer_service: LayerService, config: Configuration, force: bool):
+def run(task, config: Configuration, force: bool):
     log_message("Started initialize_layers task", Qgis.Info)
-    existing_layers = layer_service.get_all_layers()
+
+    layer_service = LayerService(config)
+    existing_layers = layer_service.get_tree_root_layers()
 
     if not existing_layers:
         try:
@@ -23,6 +25,7 @@ def run(task, layer_service: LayerService, config: Configuration, force: bool):
             raise
     else:
         log_message("Layers already initialized")
+   
     return {"success": True}
 
 
