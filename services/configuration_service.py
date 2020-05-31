@@ -2,6 +2,7 @@ import os
 import pickle
 
 from dycast_qgis.models.configuration import Configuration
+from dycast_qgis.services.logging_service import log_message
 
 
 class ConfigurationService():
@@ -24,13 +25,16 @@ class ConfigurationService():
             config_file.close()
 
     def load_config(self):
+        config_file = None
         try:
             config_file = open(self.config_file_path, "rb")
             return pickle.load(config_file)
         except (FileNotFoundError, EOFError, TypeError):
+            log_message("No configuration found on disk, initializing default settings...")
             return Configuration()
         finally:
-            config_file.close()
+            if (config_file):
+                config_file.close()
 
     def export_environment_variables(self, config: Configuration):
         os.environ["DBHOST"] = config.db_host
