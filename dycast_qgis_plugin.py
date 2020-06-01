@@ -23,30 +23,8 @@
 """
 import os
 import os.path
-import pip
-import subprocess
-from subprocess import Popen, PIPE, STDOUT
 import sys
 import platform
-
-def install_dependencies():
-    requirements_file = os.path.join(os.path.dirname(__file__),'requirements.txt' )
-    requirements_file_dycast = os.path.join(os.path.dirname(__file__), 'dycast_app', 'init', 'requirements.txt' )
-    upgrade_command = ['python', '-m', 'pip', 'install', '--upgrade', 'pip']
-    installation_command = ['python', '-m', 'pip', 'install', '--requirement', requirements_file, '--user']
-    installation_command_dycast = ['python', '-m', 'pip', 'install', '--requirement', requirements_file_dycast, '--user']
-
-    if platform.system() == 'Windows':
-        process = subprocess.run(upgrade_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-        process = subprocess.run(installation_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-        process = subprocess.run(installation_command_dycast, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-        output = process.stdout
-        error = process.stderr
-        log_message(output, Qgis.Info)
-        log_message(error, Qgis.Info)
-    else:
-        subprocess.call(['python', '-m', 'pip', 'install', '--requirement', './requirements.txt'])
-
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
@@ -56,10 +34,16 @@ from qgis.core import QgsApplication, Qgis, QgsTask
 from .util.configure_path import configure_path
 configure_path()
 
+def install_dependencies():
+    from dycast_qgis.services.dependency_service import DependencyService
+    dependency_service = DependencyService()
+    dependency_service.install_dependencies()
+
+install_dependencies()
+
 from dycast_qgis.models.configuration import Configuration
 
 from dycast_qgis.services.logging_service import log_message
-install_dependencies()
 
 from dycast_qgis.services.configuration_service import ConfigurationService
 from dycast_qgis.services.database_service import DatabaseService
