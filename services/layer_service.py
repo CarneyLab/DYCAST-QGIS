@@ -40,7 +40,7 @@ class LayerService():
 
         for (layer_name, layer_url, service_type) in self.expected_raster_layers:
             if layer_name not in layer_names:
-                log_message("Adding [{layer_name}] raster layer".format(layer_name=layer_name), Qgis.Info)
+                log_message("Creating [{layer_name}] raster layer".format(layer_name=layer_name), Qgis.Info)
                 rlayer = QgsRasterLayer(layer_url, layer_name, service_type)
                 self.add_layer_to_map(rlayer)
 
@@ -48,14 +48,17 @@ class LayerService():
         project_instance_layers = self.get_project_instance_layers()
         root = self.get_qgs_instance().layerTreeRoot()
 
-        log_message("Layer count 2: {layer_count}".format(layer_count=len(project_instance_layers)))
-        for layer in project_instance_layers:
-            log_message(layer.name())
-            root.insertChildNode(-1, QgsLayerTreeLayer(layer))
+        log_message("Layer count 1: {layer_count}".format(layer_count=len(project_instance_layers)))
+        
+        index = 0
+        for layer in reversed(list(project_instance_layers)):
+            log_message("Adding [{layer_name}] to map".format(layer_name=layer.name()))
+            root.insertChildNode(index, QgsLayerTreeLayer(layer))
+            index = index + 1
 
         layer_tree_root = self.get_tree_root_layers()
 
-        log_message("Layer count 1: {layer_count}".format(layer_count=len(layer_tree_root)))
+        log_message("Layer count 2: {layer_count}".format(layer_count=len(layer_tree_root)))
         for layer in layer_tree_root:
             log_message(layer.name())
 
@@ -64,7 +67,7 @@ class LayerService():
 
         for layer_name, geometry_column in self.expected_database_layers.items():
             if layer_name not in layer_names:
-                log_message("Adding [{layer_name}] database layer".format(layer_name=layer_name), Qgis.Info)
+                log_message("Creating [{layer_name}] database layer".format(layer_name=layer_name), Qgis.Info)
                 self.initialize_database_layer(layer_name, geometry_column)
             else:
                 log_message("Layer {layer_name} already exists".format(layer_name=layer_name))
