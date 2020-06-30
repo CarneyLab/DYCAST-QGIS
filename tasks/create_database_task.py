@@ -22,7 +22,7 @@ def check_if_db_exists(config: Configuration) -> bool:
 def run(task, config: Configuration, force: bool):
     log_message("Started create_database task", Qgis.Info)
 
-    if check_if_db_exists(config):
+    if not force and check_if_db_exists(config):
         log_message("Database already exists, skipping...", Qgis.Info)
     else:
         with redirect_stdout():
@@ -35,6 +35,9 @@ def run(task, config: Configuration, force: bool):
 
             if force:
                 command.append("--force-db-init")
+
+            if not hasattr(sys, 'argv'):
+                sys.argv  = ['']
 
             log_message(f"Running command: {command}", Qgis.Info)
             dycast_main(command)
