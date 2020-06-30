@@ -14,7 +14,8 @@ class LayerService():
              'wms')]
 
         self.expected_database_layers = {
-            'cases': 'location'
+            'cases': 'location',
+            'risk': 'location',
             }
 
     def get_qgs_instance(self):
