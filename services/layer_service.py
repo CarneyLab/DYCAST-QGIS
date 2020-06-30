@@ -35,33 +35,6 @@ class LayerService():
         self.add_raster_layers_to_project_instance()
         self.add_project_instance_layers_to_root()
 
-    def add_raster_layers_to_project_instance(self):
-        layer_names = self.get_project_instance_layer_names()
-
-        for (layer_name, layer_url, service_type) in self.expected_raster_layers:
-            if layer_name not in layer_names:
-                log_message("Creating [{layer_name}] raster layer".format(layer_name=layer_name), Qgis.Info)
-                rlayer = QgsRasterLayer(layer_url, layer_name, service_type)
-                self.add_layer_to_map(rlayer)
-
-    def add_project_instance_layers_to_root(self):
-        project_instance_layers = self.get_project_instance_layers()
-        root = self.get_qgs_instance().layerTreeRoot()
-
-        log_message("Layer count 1: {layer_count}".format(layer_count=len(project_instance_layers)))
-        
-        index = 0
-        for layer in reversed(list(project_instance_layers)):
-            log_message("Adding [{layer_name}] to map".format(layer_name=layer.name()))
-            root.insertChildNode(index, QgsLayerTreeLayer(layer))
-            index = index + 1
-
-        layer_tree_root = self.get_tree_root_layers()
-
-        log_message("Layer count 2: {layer_count}".format(layer_count=len(layer_tree_root)))
-        for layer in layer_tree_root:
-            log_message(layer.name())
-
     def add_database_layers_to_project_instance(self):
         layer_names = self.get_project_instance_layer_names()
 
@@ -91,6 +64,33 @@ class LayerService():
         uri = QgsDataSourceUri()
         uri.setConnection(self.config.db_host, self.config.db_port, self.config.db_name, self.config.db_user, self.config.db_password)
         return uri
+
+    def add_raster_layers_to_project_instance(self):
+        layer_names = self.get_project_instance_layer_names()
+
+        for (layer_name, layer_url, service_type) in self.expected_raster_layers:
+            if layer_name not in layer_names:
+                log_message("Creating [{layer_name}] raster layer".format(layer_name=layer_name), Qgis.Info)
+                rlayer = QgsRasterLayer(layer_url, layer_name, service_type)
+                self.add_layer_to_map(rlayer)
+
+    def add_project_instance_layers_to_root(self):
+        project_instance_layers = self.get_project_instance_layers()
+        root = self.get_qgs_instance().layerTreeRoot()
+
+        log_message("Layer count 1: {layer_count}".format(layer_count=len(project_instance_layers)))
+        
+        index = 0
+        for layer in reversed(list(project_instance_layers)):
+            log_message("Adding [{layer_name}] to map".format(layer_name=layer.name()))
+            root.insertChildNode(index, QgsLayerTreeLayer(layer))
+            index = index + 1
+
+        layer_tree_root = self.get_tree_root_layers()
+
+        log_message("Layer count 2: {layer_count}".format(layer_count=len(layer_tree_root)))
+        for layer in layer_tree_root:
+            log_message(layer.name())
 
     def add_layer_to_map(self, layer: QgsMapLayer):
         if layer.isValid():
