@@ -22,8 +22,7 @@ bakery = baked.bakery()
 class RiskService(object):
 
     def __init__(self, dycast_parameters):
-        self.system_srid = CONFIG.get(
-            "dycast", "system_srid")
+        self.system_srid = CONFIG.get("system_srid")
         self.dycast_parameters = dycast_parameters
 
 
@@ -59,7 +58,8 @@ class RiskService(object):
                         risk = Risk(risk_date=day,
                                     number_of_cases=vector_count,
                                     lat=point.x,
-                                    long=point.y)
+                                    long=point.y,
+                                    location=point)
 
 
                 for point in gridpoints:

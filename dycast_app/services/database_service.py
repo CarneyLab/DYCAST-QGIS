@@ -21,23 +21,19 @@ DeclarativeBase = declarative_base()
 # Helper functions common
 
 def get_db_instance_name():
-    return CONFIG.get("database", "db_instance_name")
+    return CONFIG.get("db_name")
 
 def get_db_user():
-    return CONFIG.get("database", "user")
-
+    return CONFIG.get("db_user")
 
 def get_db_password():
-    return CONFIG.get("database", "password")
-
+    return CONFIG.get("db_password")
 
 def get_db_host():
-    return CONFIG.get("database", "host")
-
+    return CONFIG.get("db_host")
 
 def get_db_port():
-    return CONFIG.get("database", "port")
-
+    return CONFIG.get("db_port")
 
 
 # Helper functions SQLAlchemy
@@ -128,14 +124,21 @@ def parse_monte_carlo_path(monte_carlo_file):
 
 def run_migrations(revision='head'):
     logging.info("Running database migrations...")
-    alembic_config_path = config_service.get_alembic_config_path()
-    alembic_config = Config(alembic_config_path)
     try:
-        command.upgrade(config=alembic_config, revision=revision)
+        command.upgrade(config=get_alembig_config(), revision=revision)
     except CommandError as ex:
         logging.error("Could not run migrations: [{0}]".format(ex))
 
+def create_migration():
+    logging.info("Creating database migration...")
+    try:
+        command.revision(config=get_alembig_config(), autogenerate=True)
+    except CommandError as ex:
+        logging.error("Could not create migration: [{0}]".format(ex))
 
+def get_alembig_config():
+    alembic_config_path = config_service.get_alembic_config_path()
+    return Config(alembic_config_path)
 
 # Init command
 

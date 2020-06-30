@@ -20,8 +20,7 @@ CONFIG = config_service.get_config()
 class RiskService(object):
 
     def __init__(self, dycast_parameters):
-        self.system_srid = CONFIG.get(
-            "dycast", "system_srid")
+        self.system_srid = CONFIG.get("system_srid")
         self.dycast_parameters = dycast_parameters
 
     def generate_risk(self):
@@ -51,10 +50,13 @@ class RiskService(object):
                     self.get_close_space_and_time_for_cluster(cluster)
                     self.get_cumulative_probability_for_cluster(session, cluster)
 
+                    point = geography_service.get_point_from_lat_long(cluster.point.y, cluster.point.x, self.system_srid)
+
                     risk = Risk(risk_date=day,
                                 number_of_cases=vector_count,
                                 lat=cluster.point.y,
                                 long=cluster.point.x,
+                                location=point,
                                 close_pairs=cluster.close_space_and_time,
                                 close_space=cluster.close_in_space,
                                 close_time=cluster.close_in_time,
