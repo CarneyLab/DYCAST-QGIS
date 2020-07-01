@@ -50,9 +50,8 @@ class DependencyService():
             
             return True
 
-        except ImportError as e:
-            log_exception(e)
-            return True
+        except ImportError:
+            return False
 
     def run_subprocess(self, command):
         process = subprocess.Popen(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
