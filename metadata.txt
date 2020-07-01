@@ -6,7 +6,7 @@
 name=Dycast
 qgisMinimumVersion=3.0
 description=Generate risk data for mosquito-borne viruses.
-version=0.1
+version=0.1.1
 author=Dycast Project
 email=meijer.vincent@gmail.com
 
