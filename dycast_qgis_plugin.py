@@ -62,7 +62,7 @@ from dycast_qgis.services.configuration_service import ConfigurationService
 from dycast_qgis.services.database_service import DatabaseService
 from dycast_qgis.services.layer_service import LayerService
 
-from dycast_qgis.tasks import load_cases_task
+from dycast_qgis.tasks import load_cases_task, generate_risk_task
 from dycast_qgis.resources import *
 from dycast_qgis.dycast_qgis_plugin_dialog import DycastQgisPluginDialog
 from dycast_qgis.settings_dialog import SettingsDialog
@@ -238,6 +238,7 @@ class DycastQgisPlugin:
 
             task.taskCompleted.connect(
                 lambda: self.dlg.importCaseFileResultLabel.setText(task.returned_values))
+            
             task_id = QgsApplication.taskManager().addTask(task)
 
             self.dlg.importCaseFileResultLabel.setText(
@@ -245,6 +246,16 @@ class DycastQgisPlugin:
         else:
             self.dlg.importCaseFileResultLabel.setText(
                 "Select an input file from your devise")
+
+    def on_generate_risk(self):
+        task = QgsTask.fromFunction(
+            "Generate risk", generate_risk_task.run, on_finished=generate_risk_task.finished)
+
+        task.taskCompleted.connect(
+            lambda: self.dlg.generateRiskResultLabel.setText("Risk generation completed"))
+
+        self.dlg.generateRiskResultLabel.setText("Generating risk...")
+        QgsApplication.taskManager().addTask(task)
 
     def run(self):
         """Run method that performs all the real work"""
@@ -265,6 +276,9 @@ class DycastQgisPlugin:
 
             self.dlg.settingsPushButton.clicked.connect(
                 self.settings_dialog.show)
+
+            self.dlg.generateRiskPushButton.clicked.connect(
+                self.on_generate_risk)
 
         # show the dialog
         self.dlg.show()
