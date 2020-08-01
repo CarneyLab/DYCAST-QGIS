@@ -11,6 +11,9 @@ class DependencyService():
         pass
 
     def install_dependencies(self):
+        
+        self.debug_info()
+
         if (self.installation_is_required()):
             log_message("Installing dependencies...", Qgis.Info)
 
@@ -33,6 +36,44 @@ class DependencyService():
             self.run_subprocess(installation_command_dycast)
             
             log_message("Done installing dependencies.", Qgis.Info)
+
+
+    def debug_info(self):
+        log_message("PYTHONHOME:", Qgis.Info)
+        python_home = os.environ['PYTHONHOME']
+        log_message(python_home, Qgis.Info)
+        python_binary = os.path.join(python_home, 'python')
+        pip3_binary = os.path.join(python_home, 'Scripts', 'pip3')
+
+        log_message("Test 1", Qgis.Info)
+        self.run_subprocess(['python', '--version'])
+
+        log_message("Test 2", Qgis.Info)
+        if os.name == 'nt':
+            self.run_subprocess(['where', 'python'])
+        else:
+            self.run_subprocess(['which', 'python'])
+        
+        log_message("Test 4", Qgis.Info)
+        self.run_subprocess([python_binary, '--version'])
+
+        log_message("Test 5", Qgis.Info)
+        self.run_subprocess([python_binary, '-m', 'pip', '--version'])
+
+        log_message("Test 6", Qgis.Info)
+        self.run_subprocess([os.path.join(python_home, 'Scripts', 'pip3'), '--version'])
+
+        log_message("Test 7", Qgis.Info)
+        self.run_subprocess(['pip3', '--version'])
+
+        log_message("Test 8", Qgis.Info)
+        self.run_subprocess([python_binary, '-m', 'pip', 'install', '--upgrade', 'pip'])
+
+        log_message("Test 9", Qgis.Info)
+        self.run_subprocess(['python', '-m', 'pip', 'install', '--upgrade', 'pip'])
+
+        log_message("Test 10", Qgis.Info)
+        self.run_subprocess([pip3_binary, 'install', '--upgrade', 'pip'])
 
     def installation_is_required(self):
         log_message("Checking if dependencies are installed", Qgis.Info)

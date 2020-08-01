@@ -34,6 +34,21 @@ from qgis.core import QgsApplication, Qgis, QgsTask
 from .util.configure_path import configure_path
 configure_path()
 
+
+import sys
+from dycast_qgis.services.logging_service import log_message
+
+log_message("sys.path:")
+for p in sys.path:
+    log_message(p)
+log_message("PYTHONPATH:")
+log_message(os.environ['PYTHONPATH'])
+log_message("PYTHONHOME:")
+log_message(os.environ['PYTHONHOME'])
+
+# from dycast_qgis.util.remote_debugging import enable_remote_debugging
+# enable_remote_debugging()
+
 def install_dependencies():
     from dycast_qgis.services.dependency_service import DependencyService
     dependency_service = DependencyService()
@@ -43,13 +58,10 @@ install_dependencies()
 
 from dycast_qgis.models.configuration import Configuration
 
-from dycast_qgis.services.logging_service import log_message
-
 from dycast_qgis.services.configuration_service import ConfigurationService
 from dycast_qgis.services.database_service import DatabaseService
 from dycast_qgis.services.layer_service import LayerService
 
-from dycast_qgis.util.remote_debugging import enable_remote_debugging
 from dycast_qgis.tasks import load_cases_task
 from dycast_qgis.resources import *
 from dycast_qgis.dycast_qgis_plugin_dialog import DycastQgisPluginDialog
@@ -67,9 +79,6 @@ class DycastQgisPlugin:
             application at run time.
         :type iface: QgsInterface
         """
-
-        enable_remote_debugging()
-
 
         # Save reference to the QGIS interface
         self.iface = iface
