@@ -17,9 +17,13 @@ class DependencyService():
             requirements_file = os.path.join(os.path.dirname(__file__), '..', 'requirements.txt' )
             requirements_file_dycast = os.path.join(os.path.dirname(__file__), '..', 'dycast_app', 'init', 'requirements.txt' )
             
-            upgrade_command = ['python', '-m', 'pip', 'install', '--upgrade', 'pip', '--user', '--no-warn-script-location']
-            installation_command = ['python', '-m', 'pip', 'install', '--requirement', requirements_file, '--user']
-            installation_command_dycast = ['python', '-m', 'pip', 'install', '--requirement', requirements_file_dycast, '--user']
+            python_home = os.environ['PYTHONHOME']
+            python_binary = os.path.join(python_home, 'python')
+            pip3_binary = os.path.join(python_home, 'Scripts', 'pip3')
+
+            upgrade_command = [python_binary, 'install', '--upgrade', 'pip', '--user', '--no-warn-script-location']
+            installation_command = [python_binary, '-m', 'pip', '--isolated', 'install', '--requirement', requirements_file, '--user']
+            installation_command_dycast = [python_binary, '-m', 'pip', '--isolated', 'install', '--requirement', requirements_file_dycast, '--user']
             
             log_message("Upgrading PIP...", Qgis.Info)
             self.run_subprocess(upgrade_command)
