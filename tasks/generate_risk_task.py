@@ -1,3 +1,4 @@
+import sys
 from qgis.core import Qgis
 
 from dycast_qgis.services.logging_service import log_message, log_exception
@@ -6,7 +7,12 @@ from dycast_qgis.util.redirect_stdout import redirect_stdout
 
 def run(task):
     log_message("Started generate_risk task", Qgis.Info)
+    
+    if not hasattr(sys, 'argv'):
+        sys.argv  = ['']
+        
     from dycast_app.dycast import main as dycast_main
+    
     with redirect_stdout():
         command = ["generate_risk", "--monte-carlo-file", "Dengue_max_100_40000.csv"]
         log_message(f"Running command: {command}", Qgis.Info)
