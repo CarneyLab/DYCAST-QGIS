@@ -24,8 +24,8 @@ class DependencyService():
             python_binary = os.path.join(python_home, 'python')
             pip3_binary = os.path.join(python_home, 'Scripts', 'pip3')
 
-            upgrade_command = [python_binary, 'install', '--upgrade', 'pip', '--user', '--no-warn-script-location']
-            installation_command = [python_binary, '-m', 'pip', '--isolated', 'install', '--requirement', requirements_file, '--user']
+            upgrade_command = [python_binary, '-m', 'pip', 'install', '--upgrade', 'pip', '--user', '--no-warn-script-location']
+            installation_command = [python_binary, '-m', 'pip', 'install', '--requirement', requirements_file, '--user']
             installation_command_dycast = [python_binary, '-m', 'pip', '--isolated', 'install', '--requirement', requirements_file_dycast, '--user']
             
             log_message("Upgrading PIP...", Qgis.Info)
