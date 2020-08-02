@@ -12,7 +12,7 @@ class DependencyService():
 
     def install_dependencies(self):
         
-        self.debug_info()
+        # self.debug_info()
 
         if (self.installation_is_required()):
             log_message("Installing dependencies...", Qgis.Info)
