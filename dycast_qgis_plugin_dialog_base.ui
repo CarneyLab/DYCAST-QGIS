@@ -107,7 +107,7 @@
    <property name="title">
     <string>Parameters</string>
    </property>
-   <widget class="QLineEdit" name="ExtentMaxXLineEdit">
+   <widget class="QLineEdit" name="extentMaxXLineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -172,7 +172,7 @@
      <string>SRID of extent</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="TemporalDomainLineEdit">
+   <widget class="QLineEdit" name="temporalDomainLineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -185,7 +185,7 @@
      <set>Qt::ImhDigitsOnly</set>
     </property>
    </widget>
-   <widget class="QLineEdit" name="SridOfCasesLineEdit">
+   <widget class="QLineEdit" name="sridOfCasesLineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -214,7 +214,7 @@
      <string>Temporal domain</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="CloseInSpaceLineEdit">
+   <widget class="QLineEdit" name="closeInSpaceLineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -227,7 +227,7 @@
      <set>Qt::ImhDigitsOnly</set>
     </property>
    </widget>
-   <widget class="QLineEdit" name="CloseInTimeLineEdit">
+   <widget class="QLineEdit" name="closeInTimeLineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -240,7 +240,7 @@
      <set>Qt::ImhDigitsOnly</set>
     </property>
    </widget>
-   <widget class="QLineEdit" name="CaseThresholdLineEdit">
+   <widget class="QLineEdit" name="caseThresholdLineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -253,7 +253,7 @@
      <set>Qt::ImhDigitsOnly</set>
     </property>
    </widget>
-   <widget class="QLineEdit" name="SridOfExtentLineEdit">
+   <widget class="QLineEdit" name="sridOfExtentLineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -311,7 +311,7 @@
      <string>Case threshold</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="ExtentMaxYLineEdit">
+   <widget class="QLineEdit" name="extentMaxYLineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -337,7 +337,7 @@
      <string>SRID of cases</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="ExtentMinYLineEdit">
+   <widget class="QLineEdit" name="extentMinYLineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -363,7 +363,7 @@
      <string>Start date</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="ExtentMinXLineEdit">
+   <widget class="QLineEdit" name="extentMinXLineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -389,7 +389,7 @@
      <string>Close in space</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="StartDateLineEdit">
+   <widget class="QLineEdit" name="startDateLineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -428,7 +428,7 @@
      <set>Qt::ImhDigitsOnly</set>
     </property>
    </widget>
-   <widget class="QLineEdit" name="EndDateLineEdit">
+   <widget class="QLineEdit" name="endDateLineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
