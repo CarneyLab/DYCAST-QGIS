@@ -229,7 +229,7 @@ class DycastQgisPlugin:
         self.dlg.importCaseFileLineEdit.setText(file_path)
         return file_path
 
-    def import_input_file(self):
+    def on_import_input_file(self):
         try:
             parameters = LoadCasesParameters(
                 self.dlg.sridOfCasesLineEdit.text(),
@@ -276,7 +276,6 @@ class DycastQgisPlugin:
             self.dlg.importCaseFileBrowseButton.clicked.connect(
                 self.select_input_file)
             self.dlg.importCaseFileStartButton.clicked.connect(
-                self.import_input_file)
 
             self.dlg.settingsPushButton.clicked.connect(
                 self.settings_dialog.show)
@@ -293,3 +292,4 @@ class DycastQgisPlugin:
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
+                    self.on_import_input_file)
