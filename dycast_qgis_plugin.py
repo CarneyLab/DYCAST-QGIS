@@ -57,6 +57,7 @@ def install_dependencies():
 install_dependencies()
 
 from dycast_qgis.models.configuration import Configuration
+from dycast_qgis.models.load_cases_parameters import LoadCasesParameters
 
 from dycast_qgis.services.configuration_service import ConfigurationService
 from dycast_qgis.services.database_service import DatabaseService
@@ -229,23 +230,26 @@ class DycastQgisPlugin:
         return file_path
 
     def import_input_file(self):
-        file_path = self.dlg.importCaseFileLineEdit.text()
-        log_message("Loading {file_path}".format(file_path=file_path), Qgis.Info)
+        try:
+            parameters = LoadCasesParameters(
+                self.dlg.sridOfCasesLineEdit.text(),
+                self.dlg.importCaseFileLineEdit.text())
+        except ValueError as ex:
+            self.dlg.importCaseFileResultLabel.setText(str(ex))
+            return
 
-        if file_path:
-            task = QgsTask.fromFunction(
-                "Load Dycast Cases Task", load_cases_task.run, on_finished=load_cases_task.finished, file_path=file_path)
+        log_message("Loading {file_path}".format(file_path=parameters.file_path), Qgis.Info)
 
-            task.taskCompleted.connect(
-                lambda: self.dlg.importCaseFileResultLabel.setText(task.returned_values))
-            
-            task_id = QgsApplication.taskManager().addTask(task)
+        task = QgsTask.fromFunction(
+            "Load Dycast Cases Task", load_cases_task.run, on_finished=load_cases_task.finished, parameters=parameters)
 
-            self.dlg.importCaseFileResultLabel.setText(
-                "Running import task. Task ID: {task_id}".format(task_id=task_id))
-        else:
-            self.dlg.importCaseFileResultLabel.setText(
-                "Select an input file from your devise")
+        task.taskCompleted.connect(
+            lambda: self.dlg.importCaseFileResultLabel.setText(task.returned_values))
+        
+        task_id = QgsApplication.taskManager().addTask(task)
+
+        self.dlg.importCaseFileResultLabel.setText(
+            "Running import task. Task ID: {task_id}".format(task_id=task_id))
 
     def on_generate_risk(self):
         task = QgsTask.fromFunction(
