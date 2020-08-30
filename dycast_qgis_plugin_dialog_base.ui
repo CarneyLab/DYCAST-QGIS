@@ -551,6 +551,27 @@
   <zorder>groupBox</zorder>
   <zorder>importCaseFileResultLabel</zorder>
  </widget>
+ <tabstops>
+  <tabstop>settingsPushButton</tabstop>
+  <tabstop>sridOfCasesLineEdit</tabstop>
+  <tabstop>importCaseFileLineEdit</tabstop>
+  <tabstop>importCaseFileBrowseButton</tabstop>
+  <tabstop>importCaseFileStartButton</tabstop>
+  <tabstop>spatialDomainLineEdit</tabstop>
+  <tabstop>temporalDomainLineEdit</tabstop>
+  <tabstop>closeInSpaceLineEdit</tabstop>
+  <tabstop>closeInTimeLineEdit</tabstop>
+  <tabstop>caseThresholdLineEdit</tabstop>
+  <tabstop>startDateLineEdit</tabstop>
+  <tabstop>endDateLineEdit</tabstop>
+  <tabstop>sridOfExtentLineEdit</tabstop>
+  <tabstop>extentMinXLineEdit</tabstop>
+  <tabstop>extentMinYLineEdit</tabstop>
+  <tabstop>extentMaxXLineEdit</tabstop>
+  <tabstop>extentMaxYLineEdit</tabstop>
+  <tabstop>saveGenerateRiskParametersButton</tabstop>
+  <tabstop>generateRiskPushButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

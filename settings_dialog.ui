@@ -293,6 +293,16 @@
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>dbHostLineEdit</tabstop>
+  <tabstop>dbPortLineEdit</tabstop>
+  <tabstop>dbNameLineEdit</tabstop>
+  <tabstop>dbUserLineEdit</tabstop>
+  <tabstop>dbPasswordLineEdit</tabstop>
+  <tabstop>testConnectionPushButton</tabstop>
+  <tabstop>checkDatabaseForceCheckBox</tabstop>
+  <tabstop>createDatabasePushButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
