@@ -401,7 +401,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="generateRiskPushButton">
+   <widget class="QPushButton" name="riskGenerationPushButton">
     <property name="geometry">
      <rect>
       <x>250</x>
@@ -414,7 +414,7 @@
      <string>Generate</string>
     </property>
    </widget>
-   <widget class="QToolButton" name="saveGenerateRiskParametersButton">
+   <widget class="QToolButton" name="saveRiskGenerationParametersButton">
     <property name="geometry">
      <rect>
       <x>250</x>
@@ -565,8 +565,8 @@
   <tabstop>extentMinYLineEdit</tabstop>
   <tabstop>extentMaxXLineEdit</tabstop>
   <tabstop>extentMaxYLineEdit</tabstop>
-  <tabstop>saveGenerateRiskParametersButton</tabstop>
-  <tabstop>generateRiskPushButton</tabstop>
+  <tabstop>saveRiskGenerationParametersButton</tabstop>
+  <tabstop>riskGenerationPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections>

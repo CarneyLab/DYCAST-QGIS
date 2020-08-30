@@ -36,7 +36,7 @@ configure_path()
 
 
 import sys
-from dycast_qgis.services.logging_service import log_message
+from dycast_qgis.services.logging_service import log_message, log_exception
 
 log_message("sys.path:")
 for p in sys.path:
@@ -57,6 +57,7 @@ def install_dependencies():
 install_dependencies()
 
 from dycast_qgis.models.configuration import Configuration
+from dycast_qgis.models.risk_generation_parameters import RiskGenerationParameters
 from dycast_qgis.models.load_cases_parameters import LoadCasesParameters
 
 from dycast_qgis.services.configuration_service import ConfigurationService
@@ -220,7 +221,7 @@ class DycastQgisPlugin:
                 action)
             self.iface.removeToolBarIcon(action)
 
-    def select_input_file(self):
+    def on_select_input_file(self):
         file_path, filter_string = QFileDialog.getOpenFileName(
             parent=self.dlg,
             caption="Select input file...",
@@ -251,9 +252,19 @@ class DycastQgisPlugin:
         self.dlg.importCaseFileResultLabel.setText(
             "Running import task. Task ID: {task_id}".format(task_id=task_id))
 
+    def on_save_risk_generation_parameters(self):
+        parameters = self.get_risk_generation_parameters_from_form()
+
+
     def on_generate_risk(self):
+        try:
+            parameters = self.get_risk_generation_parameters_from_form()
+        except ValueError as ex:
+            self.dlg.generateRiskResultLabel.setText(str(ex))
+            return
+        
         task = QgsTask.fromFunction(
-            "Generate risk", generate_risk_task.run, on_finished=generate_risk_task.finished)
+            "Generate risk", generate_risk_task.run, on_finished=generate_risk_task.finished, parameters=parameters)
 
         task.taskCompleted.connect(
             lambda: self.dlg.generateRiskResultLabel.setText("Risk generation completed"))
@@ -261,35 +272,57 @@ class DycastQgisPlugin:
         self.dlg.generateRiskResultLabel.setText("Generating risk...")
         QgsApplication.taskManager().addTask(task)
 
+    def get_risk_generation_parameters_from_form(self, validate_parameters: bool = True):
+        return RiskGenerationParameters(
+            self.dlg.spatialDomainLineEdit.text(),
+            self.dlg.temporalDomainLineEdit.text(),
+            self.dlg.closeInSpaceLineEdit.text(),
+            self.dlg.closeInTimeLineEdit.text(),
+            self.dlg.caseThresholdLineEdit.text(),
+            self.dlg.startDateLineEdit.text(),
+            self.dlg.endDateLineEdit.text(),
+            self.dlg.sridOfExtentLineEdit.text(),
+            self.dlg.extentMinXLineEdit.text(),
+            self.dlg.extentMinYLineEdit.text(),
+            self.dlg.extentMaxXLineEdit.text(),
+            self.dlg.extentMaxYLineEdit.text(),
+            validate_parameters)
+
     def run(self):
         """Run method that performs all the real work"""
 
-        self.iface.openMessageLog()
+        try:
+            self.iface.openMessageLog()
 
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the plugin is started
-        if self.first_start == True:
-            self.first_start = False
-            self.dlg = DycastQgisPluginDialog()
-            self.settings_dialog = SettingsDialog(self.config, self.config_service, self.database_service, self.layer_service)
+            # Create the dialog with elements (after translation) and keep reference
+            # Only create GUI ONCE in callback, so that it will only load when the plugin is started
+            if self.first_start == True:
+                self.first_start = False
+                self.dlg = DycastQgisPluginDialog()
+                self.settings_dialog = SettingsDialog(self.config, self.config_service, self.database_service, self.layer_service)
 
-            self.dlg.importCaseFileBrowseButton.clicked.connect(
-                self.select_input_file)
-            self.dlg.importCaseFileStartButton.clicked.connect(
+                self.dlg.settingsPushButton.clicked.connect(
+                    self.settings_dialog.show)
 
-            self.dlg.settingsPushButton.clicked.connect(
-                self.settings_dialog.show)
-
-            self.dlg.generateRiskPushButton.clicked.connect(
-                self.on_generate_risk)
-
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
+                self.dlg.importCaseFileBrowseButton.clicked.connect(
+                    self.on_select_input_file)
+                self.dlg.importCaseFileStartButton.clicked.connect(
                     self.on_import_input_file)
+
+                self.dlg.saveRiskGenerationParametersButton.clicked.connect(
+                    self.on_save_risk_generation_parameters)
+
+                self.dlg.riskGenerationPushButton.clicked.connect(
+                    self.on_generate_risk)
+
+            # show the dialog
+            self.dlg.show()
+            # Run the dialog event loop
+            result = self.dlg.exec_()
+            # See if OK was pressed
+            if result:
+                # Do something useful here - delete the line containing pass and
+                # substitute with your code.
+                pass
+        except Exception as ex:
+            log_exception(ex)

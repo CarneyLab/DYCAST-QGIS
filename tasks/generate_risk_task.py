@@ -1,12 +1,12 @@
 import sys
 from qgis.core import Qgis
 
-from dycast_qgis.models.generate_risk_parameters import GenerateRiskParameters
+from dycast_qgis.models.risk_generation_parameters import RiskGenerationParameters
 from dycast_qgis.services.logging_service import log_message, log_exception
 from dycast_qgis.util.redirect_stdout import redirect_stdout
 
 
-def run(task, parameters: GenerateRiskParameters):
+def run(task, parameters: RiskGenerationParameters):
     log_message("Started generate_risk task", Qgis.Info)
 
     if not hasattr(sys, 'argv'):
