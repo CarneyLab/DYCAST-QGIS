@@ -414,21 +414,17 @@
      <string>Generate</string>
     </property>
    </widget>
-   <widget class="QToolButton" name="toolButton">
+   <widget class="QToolButton" name="saveGenerateRiskParametersButton">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>250</x>
       <y>29</y>
-      <width>31</width>
+      <width>71</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>resources/save.png</normaloff>resources/save.png</iconset>
+     <string>Save</string>
     </property>
    </widget>
   </widget>
