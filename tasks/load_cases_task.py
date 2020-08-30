@@ -18,10 +18,12 @@ def get_current_directory():
 
 def run(task, parameters: LoadCasesParameters):
     log_message("Started load_cases task", Qgis.Info)
+
+    if not hasattr(sys, 'argv'):
+        sys.argv  = ['']
+
     with redirect_stdout():
         from dycast_app.dycast import main as dycast_main
-
-        # "--spatial-domain", parameters.sridOfCases,
 
         dycast_main(["load_cases",
                     "--srid-cases", parameters.srid_of_cases,
