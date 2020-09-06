@@ -17,7 +17,6 @@ def run(task, parameters: RiskGenerationParameters):
     with redirect_stdout():
         command = [
             "generate_risk",
-            "--monte-carlo-file", "Dengue_max_100_40000.csv",
             "--spatial-domain", parameters.spatialDomain,
             "--temporal-domain", parameters.temporalDomain,
             "--close-in-space", parameters.closeInSpace,
