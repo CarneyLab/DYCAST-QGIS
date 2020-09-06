@@ -107,7 +107,9 @@ class DycastQgisPlugin:
         self.first_start = None
 
         self.config_service = ConfigurationService()
+        
         self.config = self.config_service.load_config()
+        self.risk_generation_parameters = self.config_service.load_risk_generation_parameters()
         self.database_service = DatabaseService(self.config)
         self.layer_service = LayerService(self.config)
 
@@ -254,7 +256,7 @@ class DycastQgisPlugin:
 
     def on_save_risk_generation_parameters(self):
         parameters = self.get_risk_generation_parameters_from_form()
-
+        self.config_service.persist_risk_generation_parameters(parameters)
 
     def on_generate_risk(self):
         try:
@@ -288,6 +290,21 @@ class DycastQgisPlugin:
             self.dlg.extentMaxYLineEdit.text(),
             validate_parameters)
 
+    def initialize_risk_generation_parameters_fields(self):
+        log_message(str(self.risk_generation_parameters.__dict__))
+        self.dlg.spatialDomainLineEdit.setText(self.risk_generation_parameters.spatialDomain)
+        self.dlg.temporalDomainLineEdit.setText(self.risk_generation_parameters.temporalDomain)
+        self.dlg.closeInSpaceLineEdit.setText(self.risk_generation_parameters.closeInSpace)
+        self.dlg.closeInTimeLineEdit.setText(self.risk_generation_parameters.closeInTime)
+        self.dlg.caseThresholdLineEdit.setText(self.risk_generation_parameters.caseThreshold)
+        self.dlg.startDateLineEdit.setText(self.risk_generation_parameters.startDate)
+        self.dlg.endDateLineEdit.setText(self.risk_generation_parameters.endDate)
+        self.dlg.sridOfExtentLineEdit.setText(self.risk_generation_parameters.sridOfExtent)
+        self.dlg.extentMinXLineEdit.setText(self.risk_generation_parameters.extentMinX)
+        self.dlg.extentMinYLineEdit.setText(self.risk_generation_parameters.extentMinY)
+        self.dlg.extentMaxXLineEdit.setText(self.risk_generation_parameters.extentMaxX)
+        self.dlg.extentMaxYLineEdit.setText(self.risk_generation_parameters.extentMaxY)
+
     def run(self):
         """Run method that performs all the real work"""
 
@@ -314,6 +331,8 @@ class DycastQgisPlugin:
 
                 self.dlg.riskGenerationPushButton.clicked.connect(
                     self.on_generate_risk)
+
+                self.initialize_risk_generation_parameters_fields()
 
             # show the dialog
             self.dlg.show()
