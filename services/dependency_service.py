@@ -3,7 +3,8 @@ import subprocess
 from subprocess import Popen, PIPE
 from pathlib import Path
 from qgis.core import Qgis
-from dycast_qgis.services.logging_service import log_message, log_exception
+from dycast_qgis.services.logging_service import log_message
+from dycast_qgis.services.subprocess_service import SubprocessService
 
 class DependencyService():
 
@@ -12,6 +13,7 @@ class DependencyService():
 
     def install_dependencies(self):
         
+        subprocess_service = SubprocessService()
         # self.debug_info()
 
         if (self.installation_is_required()):
@@ -29,16 +31,16 @@ class DependencyService():
             installation_command_dycast = [python_binary, '-m', 'pip', 'install', '--requirement', requirements_file_dycast, '--user']
             
             log_message("Upgrading PIP...", Qgis.Info)
-            self.run_subprocess(upgrade_command)
+            subprocess_service.run_subprocess(upgrade_command)
             log_message("Installing QGIS plugin dependencies...", Qgis.Info)
-            self.run_subprocess(installation_command)
+            subprocess_service.run_subprocess(installation_command)
             log_message("Installing Dycast app dependencies...", Qgis.Info)
-            self.run_subprocess(installation_command_dycast)
+            subprocess_service.run_subprocess(installation_command_dycast)
             
             log_message("Done installing dependencies.", Qgis.Info)
 
 
-    def debug_info(self):
+    def debug_info(self, subprocess_service: SubprocessService):
         log_message("PYTHONHOME:", Qgis.Info)
         python_home = os.environ['PYTHONHOME']
         log_message(python_home, Qgis.Info)
@@ -46,34 +48,34 @@ class DependencyService():
         pip3_binary = os.path.join(python_home, 'Scripts', 'pip3')
 
         log_message("Test 1", Qgis.Info)
-        self.run_subprocess(['python', '--version'])
+        subprocess_service.run_subprocess(['python', '--version'])
 
         log_message("Test 2", Qgis.Info)
         if os.name == 'nt':
-            self.run_subprocess(['where', 'python'])
+            subprocess_service.run_subprocess(['where', 'python'])
         else:
-            self.run_subprocess(['which', 'python'])
+            subprocess_service.run_subprocess(['which', 'python'])
         
         log_message("Test 4", Qgis.Info)
-        self.run_subprocess([python_binary, '--version'])
+        subprocess_service.run_subprocess([python_binary, '--version'])
 
         log_message("Test 5", Qgis.Info)
-        self.run_subprocess([python_binary, '-m', 'pip', '--version'])
+        subprocess_service.run_subprocess([python_binary, '-m', 'pip', '--version'])
 
         log_message("Test 6", Qgis.Info)
-        self.run_subprocess([os.path.join(python_home, 'Scripts', 'pip3'), '--version'])
+        subprocess_service.run_subprocess([os.path.join(python_home, 'Scripts', 'pip3'), '--version'])
 
         log_message("Test 7", Qgis.Info)
-        self.run_subprocess(['pip3', '--version'])
+        subprocess_service.run_subprocess(['pip3', '--version'])
 
         log_message("Test 8", Qgis.Info)
-        self.run_subprocess([python_binary, '-m', 'pip', 'install', '--upgrade', 'pip'])
+        subprocess_service.run_subprocess([python_binary, '-m', 'pip', 'install', '--upgrade', 'pip'])
 
         log_message("Test 9", Qgis.Info)
-        self.run_subprocess(['python', '-m', 'pip', 'install', '--upgrade', 'pip'])
+        subprocess_service.run_subprocess(['python', '-m', 'pip', 'install', '--upgrade', 'pip'])
 
         log_message("Test 10", Qgis.Info)
-        self.run_subprocess([pip3_binary, 'install', '--upgrade', 'pip'])
+        subprocess_service.run_subprocess([pip3_binary, 'install', '--upgrade', 'pip'])
 
     def installation_is_required(self):
         log_message("Checking if dependencies are installed", Qgis.Info)
@@ -97,28 +99,6 @@ class DependencyService():
 
         except ImportError:
             return False
-
-    def run_subprocess(self, command):
-        process = subprocess.Popen(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
-
-        while True:
-            output = process.stdout.readline()
-
-            if self.is_done(process, output):
-                break
-
-            self.log_message(output.strip(), Qgis.Info)
-
-        while True:
-            error = process.stderr.readline()
-            
-            if self.is_done(process, error):
-                break
-
-            self.log_message(error.strip(), Qgis.Critical)
-
-    def is_done(self, process, output):
-        return output == '' and process.poll() is not None
 
     def log_message(self, message, log_level: Qgis.MessageLevel):
         if message:
