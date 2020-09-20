@@ -37,6 +37,7 @@ configure_path()
 
 import sys
 from dycast_qgis.services.logging_service import log_message, log_exception
+from dycast_qgis.tasks import initialize_layers_task
 
 log_message("sys.path:")
 for p in sys.path:
@@ -271,6 +272,9 @@ class DycastQgisPlugin:
         task.taskCompleted.connect(
             lambda: self.dlg.generateRiskResultLabel.setText("Risk generation completed"))
 
+        task.taskCompleted.connect(
+            lambda: self.initialize_layers())
+
         self.dlg.generateRiskResultLabel.setText("Generating risk...")
         QgsApplication.taskManager().addTask(task)
 
@@ -304,6 +308,18 @@ class DycastQgisPlugin:
         self.dlg.extentMinYLineEdit.setText(self.risk_generation_parameters.extentMinY)
         self.dlg.extentMaxXLineEdit.setText(self.risk_generation_parameters.extentMaxX)
         self.dlg.extentMaxYLineEdit.setText(self.risk_generation_parameters.extentMaxY)
+
+    def initialize_layers(self):
+        log_message("Starting initialize_layers task...", Qgis.Info)
+        task = QgsTask.fromFunction(
+            "Initialize Dycast Layers Task",
+            initialize_layers_task.run, 
+            on_finished=initialize_layers_task.finished, config=self.config)
+
+        task.taskCompleted.connect(
+            lambda: log_message(str(task.returned_values['success']) or "Error"))
+
+        QgsApplication.taskManager().addTask(task)
 
     def run(self):
         """Run method that performs all the real work"""
