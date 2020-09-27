@@ -24,7 +24,7 @@ def run(task, parameters: RiskGenerationParameters):
     # command.append(command_arguments)
     python_home = os.environ['PYTHONHOME']
     python_binary = os.path.join(python_home, 'python')
-    command = [ 'python', dycast_script, "generate_risk","--spatial-domain", parameters.spatialDomain,"--temporal-domain", parameters.temporalDomain,"--close-in-space", parameters.closeInSpace,"--close-in-time", parameters.closeInTime,"--case-threshold", parameters.caseThreshold,"--startdate", parameters.startDate,"--enddate", parameters.endDate,"--srid-extent", parameters.sridOfExtent,"--extent-min-x", parameters.extentMinX,"--extent-min-y", parameters.extentMinY,"--extent-max-x", parameters.extentMaxX,"--extent-max-y", parameters.extentMaxY]
+    command = [ python_binary, dycast_script, "generate_risk","--spatial-domain", parameters.spatialDomain,"--temporal-domain", parameters.temporalDomain,"--close-in-space", parameters.closeInSpace,"--close-in-time", parameters.closeInTime,"--case-threshold", parameters.caseThreshold,"--startdate", parameters.startDate,"--enddate", parameters.endDate,"--srid-extent", parameters.sridOfExtent,"--extent-min-x", parameters.extentMinX,"--extent-min-y", parameters.extentMinY,"--extent-max-x", parameters.extentMaxX,"--extent-max-y", parameters.extentMaxY]
     log_message(f"Running command: {command}", Qgis.Info)
 
     try:
