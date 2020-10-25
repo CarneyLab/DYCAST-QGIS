@@ -25,6 +25,7 @@ import os
 import os.path
 import sys
 import platform
+import time 
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
@@ -59,8 +60,17 @@ def install_dependencies():
         task_id = QgsApplication.taskManager().addTask(task)
         log_message("Running dependency installation task. Task ID: {task_id}".format(task_id=task_id))
 
-        while not task.isActive():
-            log_message("Waiting for installation of dependencies")
+        result = task.waitForFinished()
+        log_message(f"No timeout occurred: {result}")
+        # while task.isActive():
+        #     log_message("Waiting for installation of dependencies")
+        #     time.sleep(2)
+        # i = 0
+        # while i < 10:
+        #     log_message(f"Is Active: {task.isActive()}")
+        #     log_message(f"Status: {task.TaskStatus()}")
+        #     time.sleep(2)
+        #     i = i + 1
 
         log_message("Done waiting for installation of dependencies")
         
