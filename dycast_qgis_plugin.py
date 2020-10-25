@@ -49,10 +49,21 @@ log_message(os.environ['PYTHONHOME'])
 # enable_remote_debugging()
 
 def install_dependencies():
-    from dycast_qgis.services.dependency_service import DependencyService
-    dependency_service = DependencyService()
-    dependency_service.install_dependencies()
+        from dycast_qgis.tasks import install_dependencies_task
+        
+        task = QgsTask.fromFunction(
+                "Load Dycast Cases Task", install_dependencies_task.run, on_finished=install_dependencies_task.finished)
 
+        task.taskCompleted.connect(lambda: log_message("Done installing dependencies"))
+        
+        task_id = QgsApplication.taskManager().addTask(task)
+        log_message("Running import task. Task ID: {task_id}".format(task_id=task_id))
+
+        while not task.isActive():
+            log_message("Waiting for installation of dependencies")
+
+        log_message("Done waiting for installation of dependencies")
+        
 install_dependencies()
 
 from dycast_qgis.models.configuration import Configuration
@@ -63,8 +74,8 @@ from dycast_qgis.services.configuration_service import ConfigurationService
 from dycast_qgis.services.database_service import DatabaseService
 from dycast_qgis.services.layer_service import LayerService
 
-from dycast_qgis.tasks import load_cases_task, initialize_layers_task, generate_risk_task
 from dycast_qgis.resources import *
+from dycast_qgis.tasks import load_cases_task, initialize_layers_task, generate_risk_task
 from dycast_qgis.dycast_qgis_plugin_dialog import DycastQgisPluginDialog
 from dycast_qgis.settings_dialog import SettingsDialog
 
@@ -106,7 +117,6 @@ class DycastQgisPlugin:
         self.first_start = None
 
         self.config_service = ConfigurationService()
-        
         self.config = self.config_service.load_config()
         self.risk_generation_parameters = self.config_service.load_risk_generation_parameters()
         self.database_service = DatabaseService(self.config)
