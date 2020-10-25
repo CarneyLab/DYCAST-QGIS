@@ -1,7 +1,7 @@
 import os
 import sys
 from qgis.core import Qgis
-from dycast_qgis.services.logging_service import log_message, log_exception
+from dycast_qgis.services.logging_service import log_message
 
 
 def configure_path():
