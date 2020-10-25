@@ -52,12 +52,12 @@ def install_dependencies():
         from dycast_qgis.tasks import install_dependencies_task
         
         task = QgsTask.fromFunction(
-                "Load Dycast Cases Task", install_dependencies_task.run, on_finished=install_dependencies_task.finished)
+                "Install Dycast Dependencies Task", install_dependencies_task.run, on_finished=install_dependencies_task.finished)
 
         task.taskCompleted.connect(lambda: log_message("Done installing dependencies"))
         
         task_id = QgsApplication.taskManager().addTask(task)
-        log_message("Running import task. Task ID: {task_id}".format(task_id=task_id))
+        log_message("Running dependency installation task. Task ID: {task_id}".format(task_id=task_id))
 
         while not task.isActive():
             log_message("Waiting for installation of dependencies")
