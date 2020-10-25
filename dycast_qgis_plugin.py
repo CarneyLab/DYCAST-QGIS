@@ -34,10 +34,8 @@ from qgis.core import QgsApplication, Qgis, QgsTask
 from .util.configure_path import configure_path
 configure_path()
 
-
 import sys
 from dycast_qgis.services.logging_service import log_message, log_exception
-from dycast_qgis.tasks import initialize_layers_task
 
 log_message("sys.path:")
 for p in sys.path:
@@ -65,7 +63,7 @@ from dycast_qgis.services.configuration_service import ConfigurationService
 from dycast_qgis.services.database_service import DatabaseService
 from dycast_qgis.services.layer_service import LayerService
 
-from dycast_qgis.tasks import load_cases_task, generate_risk_task
+from dycast_qgis.tasks import load_cases_task, initialize_layers_task, generate_risk_task
 from dycast_qgis.resources import *
 from dycast_qgis.dycast_qgis_plugin_dialog import DycastQgisPluginDialog
 from dycast_qgis.settings_dialog import SettingsDialog
