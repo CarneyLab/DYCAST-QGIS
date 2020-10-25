@@ -9,6 +9,7 @@ from dycast_qgis.util.redirect_stdout import redirect_stdout
 from dycast_qgis.models.configuration import Configuration
 from dycast_qgis.services.database_service import DatabaseService
 from dycast_qgis.services.logging_service import log_message, log_exception
+from dycast_app.dycast import main as dycast_main
 
 def get_current_directory():
     return os.path.dirname(os.path.realpath(__file__))
@@ -28,7 +29,6 @@ def run(task, config: Configuration, force: bool):
         with redirect_stdout():
             log_message("Database does not exists yet, setting up...", Qgis.Info)
 
-            from dycast_app.dycast import main as dycast_main
 
             command = ["setup_dycast", "--monte-carlo-file",
                        "Dengue_max_100_40000.csv"]
