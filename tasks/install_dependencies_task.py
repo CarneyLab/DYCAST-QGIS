@@ -12,9 +12,13 @@ from dycast_qgis.services.logging_service import log_message, log_exception
 def run(task):
     log_message("Started install_dependencies task", Qgis.Info)
 
-    dependency_service = DependencyService()
-    dependency_service.install_dependencies()
-
+    try:
+        dependency_service = DependencyService()
+        dependency_service.install_dependencies()
+        return True
+    except Exception as ex:
+        task.exception = ex
+        return False
 
 def finished(exception, result=None):
     if result:
