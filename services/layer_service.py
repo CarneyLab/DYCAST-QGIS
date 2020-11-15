@@ -79,19 +79,11 @@ class LayerService():
         project_instance_layers = self.get_project_instance_layers()
         root = self.get_qgs_instance().layerTreeRoot()
 
-        log_message("Layer count 1: {layer_count}".format(layer_count=len(project_instance_layers)))
-        
         index = 0
         for layer in reversed(list(project_instance_layers)):
             log_message("Adding [{layer_name}] to map".format(layer_name=layer.name()))
             root.insertChildNode(index, QgsLayerTreeLayer(layer))
             index = index + 1
-
-        layer_tree_root = self.get_tree_root_layers()
-
-        log_message("Layer count 2: {layer_count}".format(layer_count=len(layer_tree_root)))
-        for layer in layer_tree_root:
-            log_message(layer.name())
 
     def add_layer_to_map(self, layer: QgsMapLayer):
         if layer.isValid():
