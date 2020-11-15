@@ -50,29 +50,11 @@ log_message(os.environ['PYTHONHOME'])
 # enable_remote_debugging()
 
 def install_dependencies():
-        from dycast_qgis.tasks import install_dependencies_task
-        
-        task = QgsTask.fromFunction(
-                "Install Dycast Dependencies Task", install_dependencies_task.run, on_finished=install_dependencies_task.finished)
 
-        task.taskCompleted.connect(lambda: log_message("Done installing dependencies"))
-        
-        task_id = QgsApplication.taskManager().addTask(task)
-        log_message("Running dependency installation task. Task ID: {task_id}".format(task_id=task_id))
-
-        result = task.waitForFinished()
-        log_message(f"No timeout occurred: {result}")
-        # while task.isActive():
-        #     log_message("Waiting for installation of dependencies")
-        #     time.sleep(2)
-        # i = 0
-        # while i < 10:
-        #     log_message(f"Is Active: {task.isActive()}")
-        #     log_message(f"Status: {task.TaskStatus()}")
-        #     time.sleep(2)
-        #     i = i + 1
-
-        log_message("Done waiting for installation of dependencies")
+    from dycast_qgis.services.dependency_service import DependencyService
+    dependency_service = DependencyService()
+    dependency_service.install_dependencies()
+    log_message("Done waiting for installation of dependencies")
         
 install_dependencies()
 
@@ -85,7 +67,8 @@ from dycast_qgis.services.database_service import DatabaseService
 from dycast_qgis.services.layer_service import LayerService
 
 from dycast_qgis.resources import *
-from dycast_qgis.tasks import load_cases_task, initialize_layers_task, generate_risk_task
+from dycast_qgis.tasks.generate_risk_task import GenerateRiskTask
+from dycast_qgis.tasks import load_cases_task, initialize_layers_task
 from dycast_qgis.dycast_qgis_plugin_dialog import DycastQgisPluginDialog
 from dycast_qgis.settings_dialog import SettingsDialog
 
@@ -284,8 +267,7 @@ class DycastQgisPlugin:
             self.dlg.generateRiskResultLabel.setText(str(ex))
             return
         
-        task = QgsTask.fromFunction(
-            "Generate risk", generate_risk_task.run, on_finished=generate_risk_task.finished, parameters=parameters)
+        task = GenerateRiskTask('Generate that risk', parameters)
 
         task.taskCompleted.connect(
             lambda: self.dlg.generateRiskResultLabel.setText("Risk generation completed"))
@@ -295,6 +277,9 @@ class DycastQgisPlugin:
 
         self.dlg.generateRiskResultLabel.setText("Generating risk...")
         QgsApplication.taskManager().addTask(task)
+
+        # This log message is required, otherwise the task does nothing
+        log_message("Generating risk...")
 
     def get_risk_generation_parameters_from_form(self, validate_parameters: bool = True):
         return RiskGenerationParameters(
