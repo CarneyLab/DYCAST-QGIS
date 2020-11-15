@@ -1,6 +1,5 @@
+import sys
 import os
-import subprocess
-from subprocess import Popen, PIPE
 from pathlib import Path
 from qgis.core import Qgis
 from dycast_qgis.services.logging_service import log_message, log_exception
@@ -14,27 +13,31 @@ class DependencyService():
     def install_dependencies(self):
         
         subprocess_service = SubprocessService()
+        # self.debug_info(subprocess_service)
 
         if (self.installation_is_required()):
             log_message("Installing dependencies...", Qgis.Info)
 
-            requirements_file = os.path.join(os.path.dirname(__file__), '..', 'requirements.txt' )
-            requirements_file_dycast = os.path.join(os.path.dirname(__file__), '..', 'dycast_app', 'init', 'requirements.txt' )
-            
-            python_home = os.environ['PYTHONHOME']
+            self.install_wheel_dependencies()
+
+            # python_home = os.environ['PYTHONHOME']
             python_binary = 'python'
 
             command_base = [ python_binary, '-m', 'pip', 'install' ]
-            upgrade_command = ['--upgrade', 'pip', '--user', '--no-warn-script-location']
-            installation_command = ['--requirement', requirements_file, '--user']
-            installation_command_dycast = ['--requirement', requirements_file_dycast, '--user']
-            
-            log_message("Upgrading PIP...", Qgis.Info)
-            subprocess_service.run_subprocess(command_base + upgrade_command)
-            log_message("Installing QGIS plugin dependencies...", Qgis.Info)
-            subprocess_service.run_subprocess(command_base + installation_command)
-            log_message("Installing Dycast app dependencies...", Qgis.Info)
-            subprocess_service.run_subprocess(command_base + installation_command_dycast)
+            # upgrade_command = ['--upgrade', 'pip', '--user', '--no-warn-script-location']
+            # installation_command = ['--requirement', requirements_file, '--user']
+            # installation_command_dycast = ['--requirement', requirements_file_dycast, '--user']
+
+
+            log_message("Installing psycopg2...", Qgis.Info)
+            subprocess_service.run_subprocess(command_base + ['psycopg2-binary==2.8.3'])
+
+            # log_message("Upgrading PIP...", Qgis.Info)
+            # subprocess_service.run_subprocess(command_base + upgrade_command)
+            # log_message("Installing QGIS plugin dependencies...", Qgis.Info)
+            # subprocess_service.run_subprocess(command_base + installation_command)
+            # log_message("Installing Dycast app dependencies...", Qgis.Info)
+            # subprocess_service.run_subprocess(command_base + installation_command_dycast)
             
             if self.can_import_all_modules:
                 log_message("All dependencies could be loaded. Installation successful.", Qgis.Info)
@@ -43,6 +46,13 @@ class DependencyService():
                 log_message("!! !! ", Qgis.Warning)
             else: 
                 log_message("Dependencies could not be loaded after installation. Try restartin QGIS" ,Qgis.Critical)
+
+    def install_wheel_dependencies(self):
+        current_directory = Path(__file__).parent
+        wheels_directory = Path(os.path.join(current_directory, '..', 'dependencies', 'wheels'))
+
+        for wheel in wheels_directory.glob('**/*.whl'):
+            sys.path.append(str(wheel))
 
 
     def debug_info(self, subprocess_service: SubprocessService):
