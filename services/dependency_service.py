@@ -12,38 +12,17 @@ class DependencyService():
 
     def install_dependencies(self):
         
-        subprocess_service = SubprocessService()
         # self.debug_info(subprocess_service)
 
         if (self.installation_is_required()):
             log_message("Installing dependencies...", Qgis.Info)
 
             self.install_wheel_dependencies()
+            self.install_pypi_dependencies()
 
-            # python_home = os.environ['PYTHONHOME']
-            python_binary = 'python'
-
-            command_base = [ python_binary, '-m', 'pip', 'install' ]
-            # upgrade_command = ['--upgrade', 'pip', '--user', '--no-warn-script-location']
-            # installation_command = ['--requirement', requirements_file, '--user']
-            # installation_command_dycast = ['--requirement', requirements_file_dycast, '--user']
-
-
-            log_message("Installing psycopg2...", Qgis.Info)
-            subprocess_service.run_subprocess(command_base + ['psycopg2-binary==2.8.3'])
-
-            # log_message("Upgrading PIP...", Qgis.Info)
-            # subprocess_service.run_subprocess(command_base + upgrade_command)
-            # log_message("Installing QGIS plugin dependencies...", Qgis.Info)
-            # subprocess_service.run_subprocess(command_base + installation_command)
-            # log_message("Installing Dycast app dependencies...", Qgis.Info)
-            # subprocess_service.run_subprocess(command_base + installation_command_dycast)
-            
             if self.can_import_all_modules:
                 log_message("All dependencies could be loaded. Installation successful.", Qgis.Info)
-                log_message("!! !! ", Qgis.Warning)
-                log_message("Important: A restart of QGIS is required ", Qgis.Warning)
-                log_message("!! !! ", Qgis.Warning)
+
             else: 
                 log_message("Dependencies could not be loaded after installation. Try restartin QGIS" ,Qgis.Critical)
 
@@ -52,8 +31,15 @@ class DependencyService():
         wheels_directory = Path(os.path.join(current_directory, '..', 'dependencies', 'wheels'))
 
         for wheel in wheels_directory.glob('**/*.whl'):
-            sys.path.append(str(wheel))
+            sys.path.insert(0, str(wheel))
 
+    def install_pypi_dependencies(self):
+        python_binary = 'python'
+        command_base = [ python_binary, '-m', 'pip', 'install' ]
+
+        log_message("Installing pyproj...", Qgis.Info)
+        subprocess_service = SubprocessService()
+        subprocess_service.run_subprocess(command_base + ['pyproj==1.9.6'])
 
     def debug_info(self, subprocess_service: SubprocessService):
         log_message("PYTHONHOME:", Qgis.Info)
