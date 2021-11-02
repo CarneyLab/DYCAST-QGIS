@@ -4,7 +4,7 @@
 <br>
 
 ## Installation steps
-<br>
+
 1). Install **PostgreSQL** and **PostGIS**<br>
 In pgAdmin, create a new database "dycast"<br>
 
