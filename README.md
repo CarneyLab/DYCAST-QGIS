@@ -10,7 +10,7 @@ In pgAdmin, create a new database "dycast"<br>
 
 Supports at least PostgreSQL 9.6: https://www.postgresql.org/download/<br>
 Supports at least PostGIS 2.3-3.01. http://postgis.net/install/, http://download.osgeo.org/postgis/windows/pg96/archive/<br>
-(Note: if PostGIS 2.3 yields error "could not load library "C:/Program Files/PostgreSQL/9.6/lib/rtpostgis-2.3.dll", then copy-paste files "libeay32.dll" and "ssleay32.dll" from the folder "bin/postgisgui" to "bin")
+(Note: if PostGIS 2.3 yields <i>"ERROR: could not load library "C:/Program Files/PostgreSQL/9.6/lib/rtpostgis-2.3.dll": The specified module could not be found"</i>, then copy-paste files "libeay32.dll" and "ssleay32.dll" from the folder "bin/postgisgui" to "bin")
 
 2). Install the latest version of <b>QGIS</b> (https://qgis.org), the open-source cross-platform GIS software<br>
 
