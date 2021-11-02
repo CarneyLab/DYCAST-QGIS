@@ -17,7 +17,6 @@ In pgAdmin, create a new database "dycast"<br>
 2). Install the latest version of **QGIS** (https://qgis.org), the open-source cross-platform GIS software<br>
 <br>
 <br>
-
 3). Install **DYCAST plugin**<br>
 From the main screen of QGIS, click Plugins > Manage and Install Plugins... > Install from ZIP > select the plugin .zip file
 
