@@ -21,5 +21,3 @@ For troubleshooting, here are the plugins folders of QGIS (this is where the abo
 On Mac: /home/<your username> /.local/share/QGIS/QGIS3/profiles/default/python/plugins<br>
 On Windows: C:\Users\<your username>\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins<br>
 https://docs.qgis.org/3.16/en/docs/user_manual/plugins/plugins.html
-  
-4). After installing and loading the plugin, click "Settings" and check the "Force" box and then "Create database".
